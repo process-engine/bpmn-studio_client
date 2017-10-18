@@ -1,0 +1,34 @@
+{
+  "name": "@process-egnine/consumer_client",
+  "version": "0.1.0",
+  "description": "a client to interact with the process-engine",
+  "main": "dist/commonjs/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/process-engine/consumer_client.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/process-engine/consumer_client/issues"
+  },
+  "devDependencies": {
+    "@essential-projects/tslint-config": "^0.1.0",
+    "gulp": "^3.9.1",
+    "gulptraum": "^2.2.1",
+    "gulptraum-typescript": "^1.0.0",
+    "tsconfig": "^7.0.0",
+    "tslint": "^5.7.0",
+    "typescript": "^2.5.2"
+  },
+  "scripts": {
+    "build": "gulp build",
+    "prepare": "npm run build",
+    "build-doc": "gulp doc"
+  },
+  "homepage": "https://github.com/process-engine/consumer_client#readme"
+}
