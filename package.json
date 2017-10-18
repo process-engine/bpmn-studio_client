@@ -31,6 +31,7 @@
   "homepage": "https://github.com/process-engine/consumer_client#readme",
   "dependencies": {
     "@essential-projects/event_aggregator": "^0.1.1",
+    "@process-engine/process_engine_contracts": "^0.1.2",
     "addict-ioc": "^2.2.12",
     "bluebird": "^3.5.1",
     "faye": "^1.2.4",

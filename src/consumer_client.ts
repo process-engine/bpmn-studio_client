@@ -1,10 +1,23 @@
 import {InvocationContainer} from 'addict-ioc';
 import {registerInContainer} from './ioc_module';
 
+import {
+  IAuthenticationService,
+  ILoginResult,
+  ILogoutResult,
+  IMessage,
+  IMessageBusService,
+  IPagination,
+  IProcessDefEntity,
+  IUserTaskEntity,
+  ProcessId,
+  UserTaskId,
+} from './contracts/index';
+
 export class ConsumerClient {
   private container: InvocationContainer;
-  private _messagebus: any;
-  private _authService: any;
+  private messageBusService: IMessageBusService;
+  private authService: IAuthenticationService;
 
   public config: any = {};
   private loginToken: string;
@@ -31,40 +44,72 @@ export class ConsumerClient {
       },
     };
 
-    this._authService = await this.container.resolveAsync('AuthenticationService', undefined, this.config.authService);
-    this._messagebus = await this.container.resolveAsync('MessagebusService');
+    this.authService = await this.container.resolveAsync<IAuthenticationService>('AuthenticationService', undefined, this.config.authService);
+    this.messageBusService = await this.container.resolveAsync<IMessageBusService>('MessagebusService');
   }
 
-  public login(username: string, password: string): Promise<string> {
+  public login(username: string, password: string): Promise<ILoginResult> {
     return this._authService.login(username, password);
   }
 
-  public logout(): Promise<void> {
-    return this._authService.logout();
+  public async logout(): Promise<boolean> {
+    const logoutResult: ILogoutResult = await this._authService.logout();
+
+    return logoutResult.result;
   }
 
-  public getProcessDefList(): any {
-
+  public getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>> {
+    throw new Error('not implemented');
   }
 
-  public startProcess(processtoStart: any): any {
-
+  public startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId> {
+    throw new Error('not implemented');
   }
 
-  public getUserTaskList(): any {
-
+  public getUserTaskList(): Promise<IPagination<IUserTaskEntity>> {
+    throw new Error('not implemented');
   }
 
-  public getUserTask(taskToGet: any): any {
-
+  public getUserTask(userTaskId: UserTaskId): Promise<IUserTaskEntity> {
+    throw new Error('not implemented');
   }
 
-  public proceedUserTask(finishedTask: any): any {
+  public proceedUserTask(finishedTask: IUserTaskEntity, token?: string): Promise<void> {
 
+    const messageData: any = {
+      action: 'proceed',
+      token: messageToken,
+    };
+
+    const message: IMessage = this.messageBusService.createMessage(messageData, token);
+    const messageToken: any = this.getMessageToken(widget, action);
+
+    this.messageBusService.sendMessage(`/processengine/node/${widget.taskEntityId}`, message);
   }
 
-  public cancelUserTask(taskToCancel: any): any {
-
+  public cancelUserTask(taskToCancel: IUserTaskEntity): Promise<void> {
+    throw new Error('not implemented');
   }
+/*
+  private getMessageToken(widget: IWidget, action: string): any {
+    const messageToken: any = {};
+    if (widget.type === 'form') {
+      for (const field of (widget as IFormWidget).fields) {
+        messageToken[field.id] = field.value;
+      }
+    }
+
+    if (widget.type === 'confirm') {
+      if (action === 'abort') {
+        messageToken.key = 'decline';
+      } else {
+        messageToken.key = 'confirm';
+      }
+    }
+
+    // TODO: handle other widget types
+    return messageToken;
+  }
+  */
 
 }

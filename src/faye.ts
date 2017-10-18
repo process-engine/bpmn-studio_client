@@ -1,5 +1,5 @@
 import * as Faye from 'faye';
-import {IAuthenticationService, IMessageBusService} from './interfaces';
+import {IAuthenticationService, IMessage, IMessageBusService} from './contracts/index';
 
 export class MessageBusService implements IMessageBusService {
 
@@ -31,8 +31,8 @@ export class MessageBusService implements IMessageBusService {
     }
   }
 
-  public createMessage(): any {
-    const message: any = {};
+  public createMessage(data: any, token: string): IMessage {
+    const message: IMessage = {};
     if (this.authenticationService.hasToken()) {
       message.metadata = {
         token: this.authenticationService.getToken(),

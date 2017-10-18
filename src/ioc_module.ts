@@ -1,7 +1,6 @@
 import * as eventAggregatorRegister from '@essential-projects/event_aggregator/ioc_module';
 import {InvocationContainer} from 'addict-ioc';
-import {AuthenticationRepository} from './auth_repo';
-import {AuthenticationService} from './auth_service';
+import {AuthenticationRepository, AuthenticationService} from './authentication/index';
 import {MessageBusService} from './faye';
 
 const baseRoute: string = 'http://localhost:8000';
@@ -15,7 +14,7 @@ export function registerInContainer(container: InvocationContainer): void {
     .configure({
       some: 'config',
     })
-    .singleton(true);
+    .isTrueSingleton();
 
   container.register('MessagebusService', MessageBusService)
     .dependencies('AuthenticationService')

@@ -1,10 +1,6 @@
-export interface IErrorResponse {
-  error: any;
-}
-
 export interface IAuthenticationService {
-  login(username: string, password: string): Promise<IIdentity>;
-  logout(): Promise<void>;
+  login(username: string, password: string): Promise<ILoginResult>;
+  logout(): Promise<ILogoutResult>;
   getToken(): string;
   hasToken(): boolean;
   getIdentity(): IIdentity;
@@ -33,11 +29,4 @@ export interface IIdentity {
 export enum AuthenticationStateEvent {
   LOGIN = 'login',
   LOGOUT = 'logout',
-}
-
-export interface IMessageBusService {
-  createMessage(): any;
-  sendMessage(channel: string, message: any): Promise<any>;
-  registerMessageHandler(handler: (channel: string, message: any) => void): void;
-  removeMessageHandler(handler: (channel: string, message: any) => void): void;
 }
