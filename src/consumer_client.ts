@@ -39,7 +39,32 @@ export class ConsumerClient {
     return this._authService.login(username, password);
   }
 
-  public getProcessDefList(): string {
-    return 'things';
+  public logout(): Promise<void> {
+    return this._authService.logout();
   }
+
+  public getProcessDefList(): any {
+
+  }
+
+  public startProcess(processtoStart: any): any {
+
+  }
+
+  public getUserTaskList(): any {
+
+  }
+
+  public getUserTask(taskToGet: any): any {
+
+  }
+
+  public proceedUserTask(finishedTask: any): any {
+
+  }
+
+  public cancelUserTask(taskToCancel: any): any {
+
+  }
+
 }
