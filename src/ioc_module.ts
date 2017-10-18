@@ -11,7 +11,11 @@ export function registerInContainer(container: InvocationContainer): void {
   container.register('AuthenticationRepository', AuthenticationRepository);
 
   container.register('AuthenticationService', AuthenticationService)
-    .dependencies('AuthenticationRepository');
+    .dependencies('AuthenticationRepository')
+    .configure({
+      some: 'config',
+    })
+    .singleton(true);
 
   container.register('MessagebusService', MessageBusService)
     .dependencies('AuthenticationService')

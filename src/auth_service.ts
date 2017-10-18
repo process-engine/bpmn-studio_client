@@ -5,10 +5,23 @@ export class AuthenticationService {
 
   private authenticationRepository: IAuthenticationRepository;
   private token: string;
+  public config: any = null;
   private identity: IIdentity;
 
   constructor(authenticationRepository: IAuthenticationRepository) {
     this.authenticationRepository = authenticationRepository;
+  }
+
+  public initialize(): Promise<void> {
+    console.log('config', this.config, 'wat?');
+    console.log('test');
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log(this.config);
+        console.log('test2');
+        resolve();
+      }, 2000);
+    })
   }
 
   public getToken(): string {

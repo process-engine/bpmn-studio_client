@@ -14,7 +14,6 @@ export class MessageBusService implements IMessageBusService {
   }
 
   public initialize(): void {
-    console.log(this.config);
     this.fayeClient = new Faye.Client(this.config.routes.messageBus);
     this.fayeClient.subscribe('/**').withChannel((channel: string, message: any) => {
       this.handleIncommingMessage(channel, message);
