@@ -23,12 +23,6 @@ export class ConsumerClient {
 
   public async initialize(): Promise<void> {
     this._messagebus = await this.container.resolveAsync('MessagebusService');
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, 10000);
-    });
-    console.log('messagebus loaded', this._messagebus);
   }
 
   public getProcessDefList(): string {
