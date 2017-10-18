@@ -1,15 +1,13 @@
 
-import {AuthenticationStateEvent, IAuthenticationRepository, IEventAggregator, IIdentity} from './interfaces';
+import {AuthenticationStateEvent, IAuthenticationRepository, IIdentity} from './interfaces';
 
 export class AuthenticationService {
 
-  private eventAggregator: IEventAggregator;
   private authenticationRepository: IAuthenticationRepository;
   private token: string;
   private identity: IIdentity;
 
-  constructor(eventAggregator: IEventAggregator, authenticationRepository: IAuthenticationRepository) {
-    this.eventAggregator = eventAggregator;
+  constructor(authenticationRepository: IAuthenticationRepository) {
     this.authenticationRepository = authenticationRepository;
   }
 
@@ -25,7 +23,6 @@ export class AuthenticationService {
     const result: any = await this.authenticationRepository.login(username, password);
     this.token = result.token;
     this.identity = result.identity;
-    this.eventAggregator.publish(AuthenticationStateEvent.LOGIN, result.identity);
 
     return result;
   }
@@ -34,7 +31,6 @@ export class AuthenticationService {
     const result: any = await this.authenticationRepository.logout();
     this.token = null;
     this.identity = null;
-    this.eventAggregator.publish(AuthenticationStateEvent.LOGOUT);
 
     return result;
   }

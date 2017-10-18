@@ -1,5 +1,3 @@
-export * from '@essential-projects/event_aggregator_contracts';
-
 export interface IErrorResponse {
   error: any;
 }

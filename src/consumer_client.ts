@@ -1,15 +1,14 @@
 import {InvocationContainer} from 'addict-ioc';
+import {registerInContainer} from './ioc_module';
 
 export class ConsumerClient {
+  private container: InvocationContainer;
   private _messagebus: any;
+  public config: any;
 
   constructor() {
-    const container: InvocationContainer = this._initIocContainer();
-    this._registerModulesToIocContainer(container)
-      .then(() => {
-        this._messagebus = container.resolve('MessagebusService');
-        this.initialize();
-      });
+    this.container = this._initIocContainer();
+    registerInContainer(this.container);
   }
 
   private _initIocContainer(): InvocationContainer {
@@ -22,13 +21,14 @@ export class ConsumerClient {
     return container;
   }
 
-  private async _registerModulesToIocContainer(container: InvocationContainer): Promise<void> {
-    const iocModule: any = await import('./ioc_module');
-    iocModule.registerInContainer(container);
-  }
-
-  private initialize(): void {
-    // do initialize things
+  public async initialize(): Promise<void> {
+    this._messagebus = await this.container.resolveAsync('MessagebusService');
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, 10000);
+    });
+    console.log('messagebus loaded', this._messagebus);
   }
 
   public getProcessDefList(): string {

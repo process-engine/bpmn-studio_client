@@ -7,12 +7,11 @@ import {MessageBusService} from './faye';
 const baseRoute: string = 'http://localhost:8000';
 
 export function registerInContainer(container: InvocationContainer): void {
-  eventAggregatorRegister.registerInContainer(container);
 
   container.register('AuthenticationRepository', AuthenticationRepository);
 
   container.register('AuthenticationService', AuthenticationService)
-    .dependencies('EventAggregator', 'AuthenticationRepository');
+    .dependencies('AuthenticationRepository');
 
   container.register('MessagebusService', MessageBusService)
     .dependencies('AuthenticationService')
