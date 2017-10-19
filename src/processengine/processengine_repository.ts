@@ -18,7 +18,6 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
   private tokenRepository: ITokenRepository;
 
   constructor(tokenRepository: ITokenRepository) {
-    console.log(tokenRepository);
     this.tokenRepository = tokenRepository;
   }
 
