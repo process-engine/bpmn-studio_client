@@ -2,6 +2,10 @@ export interface IErrorResponse {
   error: any;
 }
 
+export interface HttpHeader {
+  [header: string]: string;
+}
+
 export function isErrorResult(result: any | IErrorResponse): result is IErrorResponse {
   return result.error !== undefined;
 }

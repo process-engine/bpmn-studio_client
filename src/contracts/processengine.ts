@@ -17,6 +17,9 @@ export interface IProcessEngineService {
 }
 
 export interface IProcessEngineRepository {
+  getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>>;
+  startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId>;
+  getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskData(userTaskId: string): Promise<IUserTaskMessageData>;
 }
 

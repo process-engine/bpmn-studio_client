@@ -12,31 +12,37 @@ export function registerInContainer(container: InvocationContainer,
   let tokenRepositoryRegistration: ITypeRegistration<ITokenRepository>;
 
   if (tokenRepository !== undefined && tokenRepository !== null) {
-    tokenRepositoryRegistration = container.registerObject('TokenService', tokenRepository);
+    tokenRepositoryRegistration = container.registerObject('TokenRepository', tokenRepository);
   } else {
-    tokenRepositoryRegistration = container.registerObject('TokenService', TokenRepository);
+    tokenRepositoryRegistration = container.register('TokenRepository', TokenRepository);
   }
 
   tokenRepositoryRegistration.isTrueSingleton();
 
-  container.register('AuthenticationRepository', AuthenticationRepository);
+  container.register('AuthenticationRepository', AuthenticationRepository)
+  .dependencies('TokenRepository');
+
   container.register('AuthenticationService', AuthenticationService)
-    .dependencies('AuthenticationRepository', 'TokenService')
+    .dependencies('AuthenticationRepository', 'TokenRepository')
     .isTrueSingleton();
 
   container.register('ProcessEngineRepository', ProcessEngineRepository)
+  .dependencies('TokenRepository')
   .configure({
     routes: {
-      processengine: `${baseRoute}/processengine`,
+      userTaskData: `${baseRoute}/processengine/user_task_data`,
+      userTaskList: `${baseRoute}/datastore/UserTask`,
+      startProcess: `${baseRoute}/processengine/start`,
+      processes: `${baseRoute}/datastore/ProcessDef`,
     },
   });
 
   container.register('ProcessEngineService', ProcessEngineService)
-    .dependencies('ProcessEngineRepository', 'TokenService')
+    .dependencies('ProcessEngineRepository')
     .isTrueSingleton();
 
   container.register('MessagebusService', MessageBusService)
-    .dependencies('AuthenticationService')
+    .dependencies('AuthenticationService', 'TokenRepository')
     .configure({
       routes: {
         messageBus: `${baseRoute}/mb`,

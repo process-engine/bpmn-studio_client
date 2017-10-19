@@ -58,7 +58,7 @@ export class ConsumerClient implements IConsumerClient {
     return logoutResult.result;
   }
 
-  public getProcessDefList(limit: number = 100, offset: number): Promise<IPagination<IProcessDefEntity>> {
+  public getProcessDefList(limit: number = 100, offset: number = 0): Promise<IPagination<IProcessDefEntity>> {
     return this.processEngineService.getProcessDefList(limit, offset);
   }
 

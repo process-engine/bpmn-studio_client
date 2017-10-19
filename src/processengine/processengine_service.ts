@@ -32,16 +32,16 @@ export class ProcessEngineService implements IProcessEngineService {
   constructor(processEngineRepository: IProcessEngineRepository) {
     this.processEngineRepository = processEngineRepository;
   }
-  public getProcessDefList(limit: number = 100, offset: number): Promise<IPagination<IProcessDefEntity>> {
-    throw new Error('not implemented');
+  public getProcessDefList(limit: number = 100, offset: number = 0): Promise<IPagination<IProcessDefEntity>> {
+    return this.processEngineRepository.getProcessDefList(limit, offset);
   }
 
-  public startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId> {
-    throw new Error('not implemented');
+  public startProcess(processToStart: IProcessDefEntity): Promise<ProcessId> {
+    return this.processEngineRepository.startProcess(processToStart);
   }
 
   public getUserTaskList(): Promise<IPagination<IUserTaskEntity>> {
-    throw new Error('not implemented');
+    return this.processEngineRepository.getUserTaskList();
   }
 
   public async getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig> {
