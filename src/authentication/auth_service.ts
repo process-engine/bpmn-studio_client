@@ -6,17 +6,20 @@ import {
   IIdentity,
   ILoginResult,
   ILogoutResult,
+  ITokenRepository,
 } from '../contracts/index';
 
 export class AuthenticationService implements IAuthenticationService {
 
   private authenticationRepository: IAuthenticationRepository;
+  private tokenRepository: ITokenRepository;
   private token: string;
   public config: any = null;
   private identity: IIdentity;
 
-  constructor(authenticationRepository: IAuthenticationRepository) {
+  constructor(authenticationRepository: IAuthenticationRepository, tokenRepository: ITokenRepository) {
     this.authenticationRepository = authenticationRepository;
+    this.tokenRepository = tokenRepository;
   }
 
   public getToken(): string {

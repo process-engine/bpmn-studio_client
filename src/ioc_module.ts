@@ -1,25 +1,26 @@
 import * as eventAggregatorRegister from '@essential-projects/event_aggregator/ioc_module';
 import {InvocationContainer, ITypeRegistration} from 'addict-ioc';
-import {AuthenticationRepository, AuthenticationService} from './authentication/index';
-import {IAuthenticationService} from './contracts';
+import {AuthenticationRepository, AuthenticationService, TokenRepository} from './authentication/index';
+import {ITokenRepository} from './contracts';
 import {MessageBusService} from './faye';
 
 const baseRoute: string = 'http://localhost:8000';
 
-export function registerInContainer(container: InvocationContainer, authService?: IAuthenticationService): void {
+export function registerInContainer(container: InvocationContainer, tokenRepository?: ITokenRepository): void {
 
-  let authServiceRegistration: ITypeRegistration<IAuthenticationService>;
+  let tokenRepositoryRegistration: ITypeRegistration<ITokenRepository>;
 
-  if (authService !== undefined && authService !== null) {
-    authServiceRegistration = container.register('AuthenticationService', <any> authService);
+  if (tokenRepository !== undefined && tokenRepository !== null) {
+    tokenRepositoryRegistration = container.registerObject('TokenService', tokenRepository);
   } else {
-    authServiceRegistration = container.register('AuthenticationService', AuthenticationService)
-      .dependencies('AuthenticationRepository');
-
-    container.register('AuthenticationRepository', AuthenticationRepository);
+    tokenRepositoryRegistration = container.registerObject('TokenService', TokenRepository);
   }
 
-  authServiceRegistration
+  container.register('AuthenticationRepository', AuthenticationRepository);
+
+
+  container.register('AuthenticationService', AuthenticationService)
+    .dependencies('AuthenticationRepository', 'TokenService')
     .isTrueSingleton()
     .configure({
       some: 'config',

@@ -9,6 +9,7 @@ import {
   IMessageBusService,
   IPagination,
   IProcessDefEntity,
+  ITokenRepository,
   IUserTaskEntity,
   ProcessId,
   UserTaskId,
@@ -22,9 +23,9 @@ export class ConsumerClient {
   public config: any = {};
   private loginToken: string;
 
-  constructor(authService?: IAuthenticationService) {
+  constructor(tokenRepository?: ITokenRepository) {
     this.container = this._initIocContainer();
-    registerInContainer(this.container, authService);
+    registerInContainer(this.container, tokenRepository);
   }
 
   private _initIocContainer(): InvocationContainer {
