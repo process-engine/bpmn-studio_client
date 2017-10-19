@@ -166,25 +166,4 @@ export class ProcessEngineService implements IProcessEngineService {
 
     return confirmWidgetConfig;
   }
-/*
-  private getMessageToken(widget: IWidget, action: string): any {
-    const messageToken: any = {};
-    if (widget.type === 'form') {
-      for (const field of (widget as IFormWidget).fields) {
-        messageToken[field.id] = field.value;
-      }
-    }
-
-    if (widget.type === 'confirm') {
-      if (action === 'abort') {
-        messageToken.key = 'decline';
-      } else {
-        messageToken.key = 'confirm';
-      }
-    }
-
-    // TODO: handle other widget types
-    return messageToken;
-  }
-  */
 }
