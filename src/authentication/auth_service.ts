@@ -13,28 +13,18 @@ export class AuthenticationService implements IAuthenticationService {
 
   private authenticationRepository: IAuthenticationRepository;
   private tokenRepository: ITokenRepository;
-  private token: string;
   public config: any = null;
-  private identity: IIdentity;
 
   constructor(authenticationRepository: IAuthenticationRepository, tokenRepository: ITokenRepository) {
     this.authenticationRepository = authenticationRepository;
     this.tokenRepository = tokenRepository;
   }
 
-  public getToken(): string {
-    return this.token;
-  }
-
-  public getIdentity(): IIdentity {
-    return this.identity;
-  }
-
   public async login(username: string, password: string): Promise<ILoginResult> {
     const result: ILoginResult = await this.authenticationRepository.login(username, password);
     if (this.config.manageToken === true) {
-      this.token = result.token;
-      this.identity = result.identity;
+      this.tokenRepository.setToken(result.token);
+      this.tokenRepository.setIdentity(result.identity);
     }
 
     return result;
@@ -42,13 +32,9 @@ export class AuthenticationService implements IAuthenticationService {
 
   public async logout(): Promise<ILogoutResult> {
     const result: any = await this.authenticationRepository.logout();
-    this.token = null;
-    this.identity = null;
+    this.tokenRepository.setToken(null);
+    this.tokenRepository.setIdentity(null);
 
     return result;
-  }
-
-  public hasToken(): boolean {
-    return this.token !== null && this.token !== undefined && this.token !== '';
   }
 }

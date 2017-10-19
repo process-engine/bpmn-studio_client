@@ -16,15 +16,13 @@ export function registerInContainer(container: InvocationContainer, tokenReposit
     tokenRepositoryRegistration = container.registerObject('TokenService', TokenRepository);
   }
 
-  container.register('AuthenticationRepository', AuthenticationRepository);
+  tokenRepositoryRegistration.isTrueSingleton();
 
+  container.register('AuthenticationRepository', AuthenticationRepository);
 
   container.register('AuthenticationService', AuthenticationService)
     .dependencies('AuthenticationRepository', 'TokenService')
-    .isTrueSingleton()
-    .configure({
-      some: 'config',
-    });
+    .isTrueSingleton();
 
   container.register('MessagebusService', MessageBusService)
     .dependencies('AuthenticationService')

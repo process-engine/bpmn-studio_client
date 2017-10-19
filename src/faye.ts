@@ -1,16 +1,16 @@
 import * as Faye from 'faye';
-import {IAuthenticationService, IMessage, IMessageBusService} from './contracts/index';
+import {IAuthenticationService, IDataMessage, IMessageBusService, ITokenRepository, MessageAction} from './contracts/index';
 
 export class MessageBusService implements IMessageBusService {
 
-  private authenticationService: IAuthenticationService;
+  private tokenRepository: ITokenRepository;
   private fayeClient: any;
   private messageHandlers: Array<(channel: string, message: any) => void> = new Array();
 
   public config: any = null;
 
-  constructor(authenticationService: IAuthenticationService) {
-    this.authenticationService = authenticationService;
+  constructor(tokenRepository: ITokenRepository) {
+    this.tokenRepository = tokenRepository;
   }
 
   public initialize(): void {
@@ -31,11 +31,15 @@ export class MessageBusService implements IMessageBusService {
     }
   }
 
-  public createMessage(data: any, token: string): IMessage {
-    const message: IMessage = {};
-    if (this.authenticationService.hasToken()) {
+  public createDataMessage(data: any): IDataMessage {
+    const message: IDataMessage = {
+      data: data,
+    };
+
+    const token: string = this.tokenRepository.getToken();
+    if (token !== undefined && token !== null) {
       message.metadata = {
-        token: this.authenticationService.getToken(),
+        token: token,
       };
     }
 
@@ -44,8 +48,8 @@ export class MessageBusService implements IMessageBusService {
 
   private isAllowedToHandle(channel: string): boolean {
     let roles: Array<string> = ['guest']; // default roles
-    if (this.authenticationService.getIdentity()) {
-      roles = this.authenticationService.getIdentity().roles;
+    if (this.tokenRepository.getIdentity()) {
+      roles = this.tokenRepository.getIdentity().roles;
     }
 
     const rolePrefix: string = '/role/';
