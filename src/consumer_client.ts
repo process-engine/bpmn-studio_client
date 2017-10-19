@@ -10,6 +10,7 @@ import {
   IPagination,
   IProcessDefEntity,
   ITokenRepository,
+  IUserTaskConfig,
   IUserTaskEntity,
   ProcessId,
   UserTaskId,
@@ -71,7 +72,7 @@ export class ConsumerClient {
     throw new Error('not implemented');
   }
 
-  public getUserTask(userTaskId: UserTaskId): Promise<IUserTaskEntity> {
+  public getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig> {
     throw new Error('not implemented');
   }
 

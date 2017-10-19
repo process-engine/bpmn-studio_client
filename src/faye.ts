@@ -34,13 +34,16 @@ export class MessageBusService implements IMessageBusService {
   public createDataMessage(data: any): IDataMessage {
     const message: IDataMessage = {
       data: data,
+      metadata: {
+        id: undefined,
+        applicationId: undefined,
+        token: undefined,
+      },
     };
 
     const token: string = this.tokenRepository.getToken();
     if (token !== undefined && token !== null) {
-      message.metadata = {
-        token: token,
-      };
+      message.metadata.token = token;
     }
 
     return message;
