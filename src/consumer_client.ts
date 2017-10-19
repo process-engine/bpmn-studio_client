@@ -50,11 +50,11 @@ export class ConsumerClient {
   }
 
   public login(username: string, password: string): Promise<ILoginResult> {
-    return this._authService.login(username, password);
+    return this.authService.login(username, password);
   }
 
   public async logout(): Promise<boolean> {
-    const logoutResult: ILogoutResult = await this._authService.logout();
+    const logoutResult: ILogoutResult = await this.authService.logout();
 
     return logoutResult.result;
   }
