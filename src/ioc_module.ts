@@ -20,22 +20,27 @@ export function registerInContainer(container: InvocationContainer,
   tokenRepositoryRegistration.isTrueSingleton();
 
   container.register('AuthenticationRepository', AuthenticationRepository)
-  .dependencies('TokenRepository');
+    .dependencies('TokenRepository')
+    .configure({
+      routes: {
+        iam: `${baseRoute}/iam`,
+      },
+    });
 
   container.register('AuthenticationService', AuthenticationService)
     .dependencies('AuthenticationRepository', 'TokenRepository')
     .isTrueSingleton();
 
   container.register('ProcessEngineRepository', ProcessEngineRepository)
-  .dependencies('TokenRepository')
-  .configure({
-    routes: {
-      userTaskData: `${baseRoute}/processengine/user_task_data`,
-      userTaskList: `${baseRoute}/datastore/UserTask`,
-      startProcess: `${baseRoute}/processengine/start`,
-      processes: `${baseRoute}/datastore/ProcessDef`,
-    },
-  });
+    .dependencies('TokenRepository')
+    .configure({
+      routes: {
+        userTaskData: `${baseRoute}/processengine/user_task_data`,
+        userTaskList: `${baseRoute}/datastore/UserTask`,
+        startProcess: `${baseRoute}/processengine/start`,
+        processes: `${baseRoute}/datastore/ProcessDef`,
+      },
+    });
 
   container.register('ProcessEngineService', ProcessEngineService)
     .dependencies('ProcessEngineRepository')

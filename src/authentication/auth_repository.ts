@@ -9,7 +9,7 @@ const HTTP_CODE_OK: number = 200;
 
 export class AuthenticationRepository implements IAuthenticationRepository {
 
-  public config: any;
+  public config: any = null;
   private tokenRepository: ITokenRepository;
 
   constructor(tokenRepository: ITokenRepository) {
