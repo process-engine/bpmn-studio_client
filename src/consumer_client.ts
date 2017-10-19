@@ -76,6 +76,21 @@ export class ConsumerClient {
 
   public proceedUserTask(finishedTask: IUserTaskEntity, token?: string): Promise<void> {
 
+    const messageToken: any = {};
+    if (widget.type === 'form') {
+      for (const field of (widget as IFormWidget).fields) {
+        messageToken[field.id] = field.value;
+      }
+    }
+
+    if (widget.type === 'confirm') {
+      if (action === 'abort') {
+        messageToken.key = 'decline';
+      } else {
+        messageToken.key = 'confirm';
+      }
+    }
+
     const messageData: any = {
       action: 'proceed',
       token: messageToken,
