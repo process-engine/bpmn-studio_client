@@ -3,6 +3,10 @@ export {IProcessDefEntity, IUserTaskEntity, IUserTaskMessageData} from '@process
 
 import {IPagination, IProcessDefEntity} from './index';
 
+// Service and Repository interfaces
+export type ProcessId = string;
+export type UserTaskId = string;
+
 export interface IProcessEngineService {
   getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>;
   startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId>;
@@ -16,16 +20,15 @@ export interface IProcessEngineRepository {
   getUserTaskData(userTaskId: string): Promise<IUserTaskMessageData>;
 }
 
-export type ProcessId = string;
-export type UserTaskId = string;
-
+// General widget-types
 export enum WidgetType {
   form = 'form',
   confirm = 'confirm',
 }
 
-// sadly, our current widgetConfigs don't share any similarities
-export type IWidgetConfig = {};
+export type IWidgetConfig = {}; // sadly, our current widgetConfigs don't share any similarities
+
+// FormWidget-types
 export enum FormWidgetFieldType {
   string = 'string',
   boolean = 'boolean',
@@ -56,6 +59,7 @@ export interface IFormWidgetConfig extends IWidgetConfig {
   fields: Array<SpecificFormWidgetField>;
 }
 
+// ConfirmWidget-types
 export enum ConfirmWidgetActionType {
   proceed = 'proceed',
   cancel = 'cancel',
@@ -71,6 +75,7 @@ export interface IConfirmWidgetConfig extends IWidgetConfig {
   actions: Array<IConfirmWidgetAction>;
 }
 
+// UserTaskConfig
 export type WidgetConfig = IFormWidgetConfig | IConfirmWidgetConfig;
 
 export interface IUserTaskConfig {
@@ -81,6 +86,7 @@ export interface IUserTaskConfig {
   widgetConfig: WidgetConfig;
 }
 
+// Types for objects that come from the processengine
 export interface UiConfigLayoutElement {
   key: string;
   label: string;
