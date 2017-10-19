@@ -3,12 +3,14 @@ import {registerInContainer} from './ioc_module';
 
 import {
   IAuthenticationService,
+  IConsumerClient,
   ILoginResult,
   ILogoutResult,
   IMessage,
   IMessageBusService,
   IPagination,
   IProcessDefEntity,
+  IProcessEngineService,
   ITokenRepository,
   IUserTaskConfig,
   IUserTaskEntity,
@@ -16,17 +18,17 @@ import {
   UserTaskId,
 } from './contracts/index';
 
-export class ConsumerClient {
+export class ConsumerClient implements IConsumerClient {
   private container: InvocationContainer;
   private messageBusService: IMessageBusService;
   private authService: IAuthenticationService;
+  private processEngineService: IProcessEngineService;
 
   public config: any = {};
   private loginToken: string;
 
-  constructor(tokenRepository?: ITokenRepository) {
+  constructor() {
     this.container = this._initIocContainer();
-    registerInContainer(this.container, tokenRepository);
   }
 
   private _initIocContainer(): InvocationContainer {
@@ -39,15 +41,11 @@ export class ConsumerClient {
     return container;
   }
 
-  public async initialize(): Promise<void> {
-    this.config = {
-      authService: {
-        some: 'config123',
-      },
-    };
+  public async initialize(tokenRepository?: ITokenRepository): Promise<void> {
+    registerInContainer(this.container, tokenRepository, this.config.baseRoute);
 
     this.authService = await this.container.resolveAsync<IAuthenticationService>('AuthenticationService', undefined, this.config.authService);
-    this.messageBusService = await this.container.resolveAsync<IMessageBusService>('MessagebusService');
+    this.processEngineService = await this.container.resolveAsync<IProcessEngineService>('ProcessEngineService', undefined, this.config.processEngineService);
   }
 
   public login(username: string, password: string): Promise<ILoginResult> {
@@ -61,75 +59,26 @@ export class ConsumerClient {
   }
 
   public getProcessDefList(limit: number = 100, offset: number): Promise<IPagination<IProcessDefEntity>> {
-    throw new Error('not implemented');
+    return this.processEngineService.getProcessDefList(limit, offset);
   }
 
-  public startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId> {
-    throw new Error('not implemented');
+  public startProcess(processToStart: IProcessDefEntity): Promise<ProcessId> {
+    return this.processEngineService.startProcess(processToStart);
   }
 
   public getUserTaskList(): Promise<IPagination<IUserTaskEntity>> {
-    throw new Error('not implemented');
+    return this.processEngineService.getUserTaskList();
   }
 
   public getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig> {
-    throw new Error('not implemented');
+    return this.processEngineService.getUserTaskConfig(userTaskId);
   }
 
-  public proceedUserTask(finishedTask: IUserTaskEntity, token?: string): Promise<void> {
-    throw new Error('not implemented');
-    /*
-
-    const messageToken: any = {};
-    if (widget.type === 'form') {
-      for (const field of (widget as IFormWidget).fields) {
-        messageToken[field.id] = field.value;
-      }
-    }
-
-    if (widget.type === 'confirm') {
-      if (action === 'abort') {
-        messageToken.key = 'decline';
-      } else {
-        messageToken.key = 'confirm';
-      }
-    }
-
-    const messageData: any = {
-      action: 'proceed',
-      token: messageToken,
-    };
-
-    const message: IMessage = this.messageBusService.createMessage(messageData, token);
-    const messageToken: any = this.getMessageToken(widget, action);
-
-    this.messageBusService.sendMessage(`/processengine/node/${widget.taskEntityId}`, message);
-    */
+  public proceedUserTask(finishedTask: IUserTaskConfig): Promise<void> {
+    return this.processEngineService.proceedUserTask(finishedTask);
   }
 
-  public cancelUserTask(taskToCancel: IUserTaskEntity): Promise<void> {
-    throw new Error('not implemented');
+  public cancelUserTask(taskToCancel: IUserTaskConfig): Promise<void> {
+    return this.processEngineService.cancelUserTask(taskToCancel);
   }
-/*
-  private getMessageToken(widget: IWidget, action: string): any {
-    const messageToken: any = {};
-    if (widget.type === 'form') {
-      for (const field of (widget as IFormWidget).fields) {
-        messageToken[field.id] = field.value;
-      }
-    }
-
-    if (widget.type === 'confirm') {
-      if (action === 'abort') {
-        messageToken.key = 'decline';
-      } else {
-        messageToken.key = 'confirm';
-      }
-    }
-
-    // TODO: handle other widget types
-    return messageToken;
-  }
-  */
-
 }

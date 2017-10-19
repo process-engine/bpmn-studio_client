@@ -3,10 +3,11 @@ import {InvocationContainer, ITypeRegistration} from 'addict-ioc';
 import {AuthenticationRepository, AuthenticationService, TokenRepository} from './authentication/index';
 import {ITokenRepository} from './contracts';
 import {MessageBusService} from './faye';
+import {ProcessEngineRepository, ProcessEngineService} from './processengine/index';
 
-const baseRoute: string = 'http://localhost:8000';
-
-export function registerInContainer(container: InvocationContainer, tokenRepository?: ITokenRepository): void {
+export function registerInContainer(container: InvocationContainer,
+                                    tokenRepository?: ITokenRepository,
+                                    baseRoute: string = 'http://localhost:8000'): void {
 
   let tokenRepositoryRegistration: ITypeRegistration<ITokenRepository>;
 
@@ -19,9 +20,19 @@ export function registerInContainer(container: InvocationContainer, tokenReposit
   tokenRepositoryRegistration.isTrueSingleton();
 
   container.register('AuthenticationRepository', AuthenticationRepository);
-
   container.register('AuthenticationService', AuthenticationService)
     .dependencies('AuthenticationRepository', 'TokenService')
+    .isTrueSingleton();
+
+  container.register('ProcessEngineRepository', ProcessEngineRepository)
+  .configure({
+    routes: {
+      processengine: `${baseRoute}/processengine`,
+    },
+  });
+
+  container.register('ProcessEngineService', ProcessEngineService)
+    .dependencies('ProcessEngineRepository', 'TokenService')
     .isTrueSingleton();
 
   container.register('MessagebusService', MessageBusService)
