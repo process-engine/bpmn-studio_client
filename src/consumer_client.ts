@@ -22,9 +22,9 @@ export class ConsumerClient {
   public config: any = {};
   private loginToken: string;
 
-  constructor() {
+  constructor(authService?: IAuthenticationService) {
     this.container = this._initIocContainer();
-    registerInContainer(this.container);
+    registerInContainer(this.container, authService);
   }
 
   private _initIocContainer(): InvocationContainer {
@@ -58,7 +58,7 @@ export class ConsumerClient {
     return logoutResult.result;
   }
 
-  public getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>> {
+  public getProcessDefList(limit: number = 100, offset: number): Promise<IPagination<IProcessDefEntity>> {
     throw new Error('not implemented');
   }
 
@@ -75,6 +75,8 @@ export class ConsumerClient {
   }
 
   public proceedUserTask(finishedTask: IUserTaskEntity, token?: string): Promise<void> {
+    throw new Error('not implemented');
+    /*
 
     const messageToken: any = {};
     if (widget.type === 'form') {
@@ -100,6 +102,7 @@ export class ConsumerClient {
     const messageToken: any = this.getMessageToken(widget, action);
 
     this.messageBusService.sendMessage(`/processengine/node/${widget.taskEntityId}`, message);
+    */
   }
 
   public cancelUserTask(taskToCancel: IUserTaskEntity): Promise<void> {
