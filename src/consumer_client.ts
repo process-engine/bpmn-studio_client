@@ -84,6 +84,14 @@ export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
     return this.processEngineService.getUserTaskList();
   }
 
+  public getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>> {
+    return this.processEngineService.getUserTaskListByProcessDefId(processDefId);
+  }
+
+  public getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>> {
+    return this.processEngineService.getUserTaskListByProcessInstanceId(processInstanceId);
+  }
+
   public getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig> {
     return this.processEngineService.getUserTaskConfig(userTaskId);
   }

@@ -4,11 +4,9 @@ const util = require('util');
 
 async function run() {
   await clientInstance.initialize();
-  const eventHandler = (eventName, ...parameter) => {
-    console.log('message', eventName, ...parameter);
-  };
-  clientInstance.on('*', function(...parameter) {
-    eventHandler(this.event, ...parameter);
+
+  clientInstance.on('renderUserTask', (userTaskConfig) => {
+    console.log(userTaskConfig);
   });
 }
 

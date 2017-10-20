@@ -87,6 +87,14 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     return this.processEngineRepository.getUserTaskList();
   }
 
+  public getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>> {
+    return this.processEngineRepository.getUserTaskListByProcessDefId(processDefId);
+  }
+
+  public getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>> {
+    return this.processEngineRepository.getUserTaskListByProcessInstanceId(processInstanceId);
+  }
+
   public async getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig> {
     const userTaskData: IUserTaskMessageData = await this.processEngineRepository.getUserTaskData(userTaskId);
 

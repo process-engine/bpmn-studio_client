@@ -6,6 +6,7 @@ import {
   IPagination,
   IProcessDefEntity,
   IProcessEngineRepository,
+  IQueryClause,
   ITokenRepository,
   IUserTaskEntity,
   IUserTaskMessageData,
@@ -69,7 +70,39 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
   }
 
   public async getUserTaskList(): Promise<IPagination<IUserTaskEntity>> {
-    const url: string = `${this.config.routes.userTaskData}?expandCollection=["process.processDef", "nodeDef"]&limit="ALL"`;
+    const url: string = `${this.config.routes.userTaskList}?expandCollection=["process.processDef", "nodeDef"]&limit="ALL"`;
+    const response: Response = await fetch(url, {
+      method: 'get',
+      headers: this.getFetchHeader(),
+    });
+
+    return throwOnErrorResponse<IPagination<IUserTaskEntity>>(response);
+  }
+
+  public async getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>> {
+    const query: IQueryClause = {
+      attribute: 'process.processDef.id',
+      operator: '=',
+      value: processDefId,
+    };
+    const parameters: string = `expandCollection=["process.processDef", "nodeDef"]&limit="ALL"`;
+    const url: string = `${this.config.routes.userTaskList}?${parameters}&query=${JSON.stringify(query)}`;
+    const response: Response = await fetch(url, {
+      method: 'get',
+      headers: this.getFetchHeader(),
+    });
+
+    return throwOnErrorResponse<IPagination<IUserTaskEntity>>(response);
+  }
+
+  public async getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>> {
+    const query: IQueryClause = {
+      attribute: 'process.id',
+      operator: '=',
+      value: processInstanceId,
+    };
+    const parameters: string = `expandCollection=["process.processDef", "nodeDef"]&limit="ALL"`;
+    const url: string = `${this.config.routes.userTaskList}?${parameters}&query=${JSON.stringify(query)}`;
     const response: Response = await fetch(url, {
       method: 'get',
       headers: this.getFetchHeader(),

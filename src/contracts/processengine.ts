@@ -1,5 +1,6 @@
 import {IUserTaskEntity, IUserTaskMessageData} from '@process-engine/process_engine_contracts';
 import {EventEmitter2} from 'eventemitter2';
+export {IQueryClause} from '@essential-projects/core_contracts';
 export {IProcessDefEntity, IUserTaskEntity, IUserTaskMessageData} from '@process-engine/process_engine_contracts';
 
 import {IPagination, IProcessDefEntity} from './index';
@@ -13,6 +14,8 @@ export interface IProcessEngineService extends EventEmitter2 {
   startProcessById(processDefId: string): Promise<ProcessId>;
   startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
+  getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>;
+  getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
 }
@@ -22,6 +25,8 @@ export interface IProcessEngineRepository {
   startProcessById(processDefId: string): Promise<ProcessId>;
   startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
+  getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>;
+  getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskData(userTaskId: string): Promise<IUserTaskMessageData>;
 }
 

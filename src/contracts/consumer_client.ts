@@ -17,6 +17,8 @@ export interface IConsumerClient {
   startProcessById(processDefId: string): Promise<ProcessId>;
   startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
+  getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>;
+  getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
 }
