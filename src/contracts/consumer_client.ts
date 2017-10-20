@@ -6,7 +6,8 @@ export interface IConsumerClient {
   login(username: string, password: string): Promise<ILoginResult>;
   logout(): Promise<boolean>;
   getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>>;
-  startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId>;
+  startProcessById(processDefId: string): Promise<ProcessId>;
+  startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig): Promise<void>;

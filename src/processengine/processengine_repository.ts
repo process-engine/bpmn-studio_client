@@ -31,7 +31,7 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
     return throwOnErrorResponse<IPagination<IProcessDefEntity>>(response);
   }
 
-  public async startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId> {
+  public async startProcessById(processDefId: string): Promise<ProcessId> {
     const url: string = this.config.routes.startProcess;
     const response: Response = await fetch(url, {
       method: 'post',
@@ -40,7 +40,24 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
       }),
       body: JSON.stringify({
         msg: {
-          key: processtoStart.key,
+          id: processDefId,
+        },
+      }),
+    });
+
+    return throwOnErrorResponse<ProcessId>(response);
+  }
+
+  public async startProcessByKey(processDefKey: string): Promise<ProcessId> {
+    const url: string = this.config.routes.startProcess;
+    const response: Response = await fetch(url, {
+      method: 'post',
+      headers: this.getFetchHeader({
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify({
+        msg: {
+          key: processDefKey,
         },
       }),
     });

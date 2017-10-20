@@ -62,8 +62,12 @@ export class ConsumerClient implements IConsumerClient {
     return this.processEngineService.getProcessDefList(limit, offset);
   }
 
-  public startProcess(processToStart: IProcessDefEntity): Promise<ProcessId> {
-    return this.processEngineService.startProcess(processToStart);
+  public startProcessById(processDefId: string): Promise<ProcessId> {
+    return this.processEngineService.startProcessById(processDefId);
+  }
+
+  public startProcessByKey(processDefKey: string): Promise<ProcessId> {
+    return this.processEngineService.startProcessByKey(processDefKey);
   }
 
   public getUserTaskList(): Promise<IPagination<IUserTaskEntity>> {

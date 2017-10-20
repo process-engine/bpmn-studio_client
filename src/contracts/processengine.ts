@@ -9,7 +9,8 @@ export type UserTaskId = string;
 
 export interface IProcessEngineService {
   getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>;
-  startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId>;
+  startProcessById(processDefId: string): Promise<ProcessId>;
+  startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig): Promise<void>;
@@ -18,7 +19,8 @@ export interface IProcessEngineService {
 
 export interface IProcessEngineRepository {
   getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>>;
-  startProcess(processtoStart: IProcessDefEntity): Promise<ProcessId>;
+  startProcessById(processDefId: string): Promise<ProcessId>;
+  startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskData(userTaskId: string): Promise<IUserTaskMessageData>;
 }
@@ -48,12 +50,12 @@ export interface IFormWidgetField<TValue> {
 
 export type IFormWidgetStringField = IFormWidgetField<string>;
 export type IFormWidgetBooleanField = IFormWidgetField<boolean>;
+export interface IFormWidgetEnumField extends IFormWidgetField<string> {
+  enumValues: Array<IFormWidgetEnumValue>;
+}
 export interface IFormWidgetEnumValue {
   label: string;
   value: string;
-}
-export interface IFormWidgetEnumField extends IFormWidgetField<string> {
-  enumValues: Array<IFormWidgetEnumValue>;
 }
 
 export type SpecificFormWidgetField = IFormWidgetStringField | IFormWidgetBooleanField | IFormWidgetEnumField;

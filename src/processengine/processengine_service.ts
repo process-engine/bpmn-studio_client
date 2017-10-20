@@ -36,8 +36,12 @@ export class ProcessEngineService implements IProcessEngineService {
     return this.processEngineRepository.getProcessDefList(limit, offset);
   }
 
-  public startProcess(processToStart: IProcessDefEntity): Promise<ProcessId> {
-    return this.processEngineRepository.startProcess(processToStart);
+  public startProcessById(processDefId: string): Promise<ProcessId> {
+    return this.processEngineRepository.startProcessById(processDefId);
+  }
+
+  public startProcessByKey(processDefKey: string): Promise<ProcessId> {
+    return this.processEngineRepository.startProcessByKey(processDefKey);
   }
 
   public getUserTaskList(): Promise<IPagination<IUserTaskEntity>> {
@@ -157,7 +161,7 @@ export class ProcessEngineService implements IProcessEngineService {
 
       if (action.key === 'confirm') {
         confirmAction.action = ConfirmWidgetActionType.proceed;
-      } else if (action.key === 'confirm' || action.isCancel === true) {
+      } else if (action.key === 'cancel' || action.isCancel === true) {
         confirmAction.action = ConfirmWidgetActionType.cancel;
       }
 
