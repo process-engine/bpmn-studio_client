@@ -223,7 +223,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
 
     const rolePrefix: string = '/role/';
     if (!channel.startsWith(rolePrefix)) {
-      return false;
+      return true;
     }
 
     const handledRole: string = channel.substr(rolePrefix.length);
