@@ -1,20 +1,25 @@
+import {EventEmitter2} from 'eventemitter2';
 import {
   ConfirmAction,
   FormWidgetFieldType,
   IConfirmWidgetAction,
   IConfirmWidgetConfig,
+  IDataMessage,
   IFormWidgetBooleanField,
   IFormWidgetConfig,
   IFormWidgetEnumField,
   IFormWidgetEnumValue,
   IFormWidgetField,
   IFormWidgetStringField,
+  IMessage,
+  IMessageBusService,
   INodeDefFormField,
   INodeDefFormFieldValue,
   IPagination,
   IProcessDefEntity,
   IProcessEngineRepository,
   IProcessEngineService,
+  ITokenRepository,
   IUserTaskConfig,
   IUserTaskEntity,
   IUserTaskMessageData,
@@ -27,13 +32,45 @@ import {
   WidgetType,
 } from '../contracts/index';
 
-export class ProcessEngineService implements IProcessEngineService {
+export class ProcessEngineService extends EventEmitter2 implements IProcessEngineService {
 
   private processEngineRepository: IProcessEngineRepository;
+  private messageBusService: IMessageBusService;
+  private tokenRepository: ITokenRepository;
 
-  constructor(processEngineRepository: IProcessEngineRepository) {
+  constructor(processEngineRepository: IProcessEngineRepository, messageBusService: IMessageBusService, tokenRepository: ITokenRepository) {
+    super({wildcard: true});
     this.processEngineRepository = processEngineRepository;
+    this.messageBusService = messageBusService;
+    this.tokenRepository = tokenRepository;
   }
+
+  public initialize(): void {
+    const eventHandler: Function = (channelName: string, ...parameter: Array<any>): void => {
+      if (!this.isAllowedToHandle(channelName)) {
+        return;
+      }
+
+      let event: string = channelName;
+      const message: IMessage = parameter[0];
+      if (this.messageBusService.messageIsDataMessage(message)) {
+        const messageIsUserTask = message.data &&
+                                  message.data.action === 'userTask';
+
+        if (messageIsUserTask) {
+          event = 'renderUserTask';
+          parameter[0] = this.getUserTaskConfigFromUserTaskData(message.data.data);
+        }
+      }
+
+      this.emit(event, ...parameter);
+    };
+
+    this.messageBusService.on('*', function(...parameter: Array<any>): void {
+      eventHandler(this.event, ...parameter);
+    });
+  }
+
   public getProcessDefList(limit: number = 100, offset: number = 0): Promise<IPagination<IProcessDefEntity>> {
     return this.processEngineRepository.getProcessDefList(limit, offset);
   }
@@ -78,9 +115,14 @@ export class ProcessEngineService implements IProcessEngineService {
         userTaskResult.key = ConfirmAction.confirm;
       }
     }
+    const messageData: any = {
+      action: 'proceed',
+      token: userTaskResult,
+    };
 
-    console.log(finishedTask, userTaskResult);
-    return this.processEngineRepository.proceedUserTask(finishedTask.id, userTaskResult);
+    const proceedMessage: IDataMessage = this.messageBusService.createDataMessage(messageData);
+
+    return this.messageBusService.sendMessage(`/processengine/node/${finishedTask.id}`, proceedMessage);
   }
 
   private getUserTaskConfigFromUserTaskData(userTaskData: IUserTaskMessageData): IUserTaskConfig {
@@ -163,5 +205,21 @@ export class ProcessEngineService implements IProcessEngineService {
     });
 
     return confirmWidgetConfig;
+  }
+
+  private isAllowedToHandle(channel: string): boolean {
+    let roles: Array<string> = ['guest']; // default roles
+    if (this.tokenRepository.getIdentity()) {
+      roles = this.tokenRepository.getIdentity().roles;
+    }
+
+    const rolePrefix: string = '/role/';
+    if (!channel.startsWith(rolePrefix)) {
+      return false;
+    }
+
+    const handledRole: string = channel.substr(rolePrefix.length);
+
+    return roles.includes(handledRole);
   }
 }

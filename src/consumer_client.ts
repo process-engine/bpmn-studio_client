@@ -1,4 +1,5 @@
 import {InvocationContainer} from 'addict-ioc';
+import {EventEmitter2} from 'eventemitter2';
 import {registerInContainer} from './ioc_module';
 
 import {
@@ -19,7 +20,7 @@ import {
   UserTaskProceedAction,
 } from './contracts/index';
 
-export class ConsumerClient implements IConsumerClient {
+export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
   private container: InvocationContainer;
   private messageBusService: IMessageBusService;
   private authService: IAuthenticationService;
@@ -29,6 +30,7 @@ export class ConsumerClient implements IConsumerClient {
   private loginToken: string;
 
   constructor() {
+    super({wildcard: true});
     this.container = this._initIocContainer();
   }
 
@@ -47,6 +49,13 @@ export class ConsumerClient implements IConsumerClient {
 
     this.authService = await this.container.resolveAsync<IAuthenticationService>('AuthenticationService', undefined, this.config.authService);
     this.processEngineService = await this.container.resolveAsync<IProcessEngineService>('ProcessEngineService', undefined, this.config.processEngineService);
+
+    const eventHandler: Function = (eventName: string, ...parameter: Array<any>): void => {
+      this.emit(eventName, ...parameter);
+    };
+    this.processEngineService.on('*', function(...parameter: Array<any>): void {
+      eventHandler(this.event, ...parameter);
+    });
   }
 
   public login(username: string, password: string): Promise<ILoginResult> {

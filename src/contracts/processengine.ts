@@ -1,4 +1,5 @@
 import {IUserTaskEntity, IUserTaskMessageData} from '@process-engine/process_engine_contracts';
+import {EventEmitter2} from 'eventemitter2';
 export {IProcessDefEntity, IUserTaskEntity, IUserTaskMessageData} from '@process-engine/process_engine_contracts';
 
 import {IPagination, IProcessDefEntity} from './index';
@@ -7,7 +8,7 @@ import {IPagination, IProcessDefEntity} from './index';
 export type ProcessId = string;
 export type UserTaskId = string;
 
-export interface IProcessEngineService {
+export interface IProcessEngineService extends EventEmitter2 {
   getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>;
   startProcessById(processDefId: string): Promise<ProcessId>;
   startProcessByKey(processDefKey: string): Promise<ProcessId>;
@@ -22,7 +23,6 @@ export interface IProcessEngineRepository {
   startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskData(userTaskId: string): Promise<IUserTaskMessageData>;
-  proceedUserTask(userTaskId: string, userTaskResult: any): Promise<void>;
 }
 
 // General widget-types

@@ -1,7 +1,8 @@
+import {EventEmitter2} from 'eventemitter2';
 import * as Faye from 'faye';
-import {IAuthenticationService, IDataMessage, IMessageBusService, ITokenRepository, MessageAction} from './contracts/index';
+import {IAuthenticationService, IDataMessage, IMessage, IMessageBusService, ITokenRepository, MessageAction} from './contracts/index';
 
-export class MessageBusService implements IMessageBusService {
+export class MessageBusService extends EventEmitter2 implements IMessageBusService {
 
   private tokenRepository: ITokenRepository;
   private fayeClient: any;
@@ -10,25 +11,16 @@ export class MessageBusService implements IMessageBusService {
   public config: any = null;
 
   constructor(tokenRepository: ITokenRepository) {
+    super({wildcard: true});
     this.tokenRepository = tokenRepository;
   }
 
   public initialize(): void {
     this.fayeClient = new Faye.Client(this.config.routes.messageBus);
+
     this.fayeClient.subscribe('/**').withChannel((channel: string, message: any) => {
-      this.handleIncommingMessage(channel, message);
+      this.emit(channel, message);
     });
-  }
-
-  private handleIncommingMessage(channel: string, message: any): void {
-    const isAllowedToHandle: boolean = this.isAllowedToHandle(channel);
-    if (!isAllowedToHandle) {
-      return;
-    }
-
-    for (const handler of this.messageHandlers) {
-      handler(channel, message);
-    }
   }
 
   public createDataMessage(data: any): IDataMessage {
@@ -49,34 +41,11 @@ export class MessageBusService implements IMessageBusService {
     return message;
   }
 
-  private isAllowedToHandle(channel: string): boolean {
-    let roles: Array<string> = ['guest']; // default roles
-    if (this.tokenRepository.getIdentity()) {
-      roles = this.tokenRepository.getIdentity().roles;
-    }
-
-    const rolePrefix: string = '/role/';
-    if (!channel.startsWith(rolePrefix)) {
-      return false;
-    }
-
-    const handledRole: string = channel.substr(rolePrefix.length);
-
-    return roles.includes(handledRole);
-  }
-
   public sendMessage(channel: string, message: any): Promise<any> {
     return this.fayeClient.publish(channel, message);
   }
 
-  public registerMessageHandler(handler: (channel: string, message: any) => void): void {
-    this.messageHandlers.push(handler);
-  }
-
-  public removeMessageHandler(handler: (channel: string, message: any) => void): void {
-    const index: number = this.messageHandlers.indexOf(handler);
-    if (index >= 0) {
-      this.messageHandlers.slice(index, 1);
-    }
+  public messageIsDataMessage(message: any): message is IDataMessage {
+    return message.data !== undefined;
   }
 }

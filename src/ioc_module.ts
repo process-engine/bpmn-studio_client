@@ -32,7 +32,7 @@ export function registerInContainer(container: InvocationContainer,
     .isTrueSingleton();
 
   container.register('ProcessEngineRepository', ProcessEngineRepository)
-    .dependencies('TokenRepository', 'MessagebusService')
+    .dependencies('TokenRepository')
     .configure({
       routes: {
         userTaskData: `${baseRoute}/processengine/user_task_data`,
@@ -43,7 +43,7 @@ export function registerInContainer(container: InvocationContainer,
     });
 
   container.register('ProcessEngineService', ProcessEngineService)
-    .dependencies('ProcessEngineRepository')
+    .dependencies('ProcessEngineRepository', 'MessagebusService', 'TokenRepository')
     .isTrueSingleton();
 
   container.register('MessagebusService', MessageBusService)

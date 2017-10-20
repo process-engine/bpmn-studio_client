@@ -1,13 +1,13 @@
 import {ExecutionContext, HttpMethod, IPojoEntityReference} from '@essential-projects/core_contracts';
 import {IDataMessage} from '@essential-projects/messagebus_contracts';
 import {ISecurityType} from '@essential-projects/security_service_contracts';
+import {EventEmitter2} from 'eventemitter2';
 export {IMessage, IDataMessage} from '@essential-projects/messagebus_contracts';
 
-export interface IMessageBusService {
+export interface IMessageBusService extends EventEmitter2 {
   createDataMessage(data: any): IDataMessage;
   sendMessage(channel: string, message: any): Promise<any>;
-  registerMessageHandler(handler: (channel: string, message: any) => void): void;
-  removeMessageHandler(handler: (channel: string, message: any) => void): void;
+  messageIsDataMessage(message: any): message is IDataMessage;
 }
 
 export enum MessageAction {

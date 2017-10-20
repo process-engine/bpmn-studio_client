@@ -37,6 +37,7 @@
     "@process-engine/process_engine_contracts": "^0.1.2",
     "addict-ioc": "^2.2.12",
     "bluebird": "^3.5.1",
+    "eventemitter2": "^4.1.2",
     "faye": "^1.2.4",
     "fetch-ponyfill": "^4.1.0",
     "isomorphic-fetch": "^2.2.1"
