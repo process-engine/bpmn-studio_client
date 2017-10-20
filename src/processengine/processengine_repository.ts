@@ -1,6 +1,8 @@
 import * as fetch_ponyfill from 'fetch-ponyfill';
 
 import {
+  IDataMessage,
+  IMessageBusService,
   IPagination,
   IProcessDefEntity,
   IProcessEngineRepository,
@@ -16,9 +18,11 @@ const {fetch, Headers, Request, Response} = fetch_ponyfill();
 export class ProcessEngineRepository implements IProcessEngineRepository {
   public config: any = null;
   private tokenRepository: ITokenRepository;
+  private messageBusService: IMessageBusService;
 
-  constructor(tokenRepository: ITokenRepository) {
+  constructor(tokenRepository: ITokenRepository, messageBusService: IMessageBusService) {
     this.tokenRepository = tokenRepository;
+    this.messageBusService = messageBusService;
   }
 
   public async getProcessDefList(limit: number = 100, offset: number = 0): Promise<IPagination<IProcessDefEntity>> {
@@ -83,6 +87,17 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
     });
 
     return throwOnErrorResponse<IUserTaskMessageData>(response);
+  }
+
+  public async proceedUserTask(userTaskId: string, userTaskResult: any): Promise<void> {
+    const messageData: any = {
+      action: 'proceed',
+      token: userTaskResult,
+    };
+
+    const proceedMessage: IDataMessage = this.messageBusService.createDataMessage(messageData);
+
+    return this.messageBusService.sendMessage(`/processengine/node/${userTaskId}`, proceedMessage);
   }
 
   private getFetchHeader(header: HttpHeader = {}): HttpHeader {

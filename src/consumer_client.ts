@@ -16,6 +16,7 @@ import {
   IUserTaskEntity,
   ProcessId,
   UserTaskId,
+  UserTaskProceedAction,
 } from './contracts/index';
 
 export class ConsumerClient implements IConsumerClient {
@@ -78,11 +79,7 @@ export class ConsumerClient implements IConsumerClient {
     return this.processEngineService.getUserTaskConfig(userTaskId);
   }
 
-  public proceedUserTask(finishedTask: IUserTaskConfig): Promise<void> {
-    return this.processEngineService.proceedUserTask(finishedTask);
-  }
-
-  public cancelUserTask(taskToCancel: IUserTaskConfig): Promise<void> {
-    return this.processEngineService.cancelUserTask(taskToCancel);
+  public proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void> {
+    return this.processEngineService.proceedUserTask(finishedTask, proceedAction);
   }
 }

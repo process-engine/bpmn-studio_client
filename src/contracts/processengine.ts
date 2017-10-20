@@ -13,8 +13,7 @@ export interface IProcessEngineService {
   startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
-  proceedUserTask(finishedTask: IUserTaskConfig): Promise<void>;
-  cancelUserTask(taskToCancel: IUserTaskConfig): Promise<void>;
+  proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
 }
 
 export interface IProcessEngineRepository {
@@ -23,6 +22,7 @@ export interface IProcessEngineRepository {
   startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskData(userTaskId: string): Promise<IUserTaskMessageData>;
+  proceedUserTask(userTaskId: string, userTaskResult: any): Promise<void>;
 }
 
 // General widget-types
@@ -65,13 +65,13 @@ export interface IFormWidgetConfig extends IWidgetConfig {
 }
 
 // ConfirmWidget-types
-export enum ConfirmWidgetActionType {
+export enum UserTaskProceedAction {
   proceed = 'proceed',
   cancel = 'cancel',
 }
 
 export interface IConfirmWidgetAction {
-  action: ConfirmWidgetActionType;
+  action: UserTaskProceedAction;
   label: string;
 }
 
@@ -109,4 +109,9 @@ export interface INodeDefFormField {
   label: string;
   formValues?: Array<INodeDefFormFieldValue>;
   defaultValue: string;
+}
+
+export enum ConfirmAction {
+  confirm = 'confirm',
+  decline = 'decline',
 }

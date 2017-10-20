@@ -1,5 +1,5 @@
 import {
-  ConfirmWidgetActionType,
+  ConfirmAction,
   FormWidgetFieldType,
   IConfirmWidgetAction,
   IConfirmWidgetConfig,
@@ -22,6 +22,8 @@ import {
   SpecificFormWidgetField,
   UiConfigLayoutElement,
   UserTaskId,
+  UserTaskProceedAction,
+  WidgetConfig,
   WidgetType,
 } from '../contracts/index';
 
@@ -54,39 +56,31 @@ export class ProcessEngineService implements IProcessEngineService {
     return this.getUserTaskConfigFromUserTaskData(userTaskData);
   }
 
-  public proceedUserTask(finishedTask: IUserTaskConfig): Promise<void> {
-    throw new Error('not implemented');
-    /*
-
-    const messageToken: any = {};
-    if (widget.type === 'form') {
-      for (const field of (widget as IFormWidget).fields) {
-        messageToken[field.id] = field.value;
-      }
-    }
-
-    if (widget.type === 'confirm') {
-      if (action === 'abort') {
-        messageToken.key = 'decline';
-      } else {
-        messageToken.key = 'confirm';
-      }
-    }
-
-    const messageData: any = {
-      action: 'proceed',
-      token: messageToken,
-    };
-
-    const message: IMessage = this.messageBusService.createMessage(messageData, token);
-    const messageToken: any = this.getMessageToken(widget, action);
-
-    this.messageBusService.sendMessage(`/processengine/node/${widget.taskEntityId}`, message);
-    */
+  public widgetConfigIsFormWidgetConfig(widgetConfig: WidgetConfig): widgetConfig is IFormWidgetConfig {
+    return (<any> widgetConfig).fields !== undefined && (<any> widgetConfig).fields !== null;
   }
 
-  public cancelUserTask(taskToCancel: IUserTaskConfig): Promise<void> {
-    throw new Error('not implemented');
+  public proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void> {
+
+    const userTaskResult: any = {};
+    if (finishedTask.widgetType === WidgetType.form) {
+      const formConfig: IFormWidgetConfig = <IFormWidgetConfig> finishedTask.widgetConfig;
+      for (const field of formConfig.fields) {
+        userTaskResult[field.id] = field.value;
+      }
+    }
+
+    if (finishedTask.widgetType === WidgetType.confirm) {
+      const confirmConfig: IConfirmWidgetConfig = <IConfirmWidgetConfig> finishedTask.widgetConfig;
+      if (proceedAction === UserTaskProceedAction.cancel) {
+        userTaskResult.key = ConfirmAction.decline;
+      } else {
+        userTaskResult.key = ConfirmAction.confirm;
+      }
+    }
+
+    console.log(finishedTask, userTaskResult);
+    return this.processEngineRepository.proceedUserTask(finishedTask.id, userTaskResult);
   }
 
   private getUserTaskConfigFromUserTaskData(userTaskData: IUserTaskMessageData): IUserTaskConfig {
@@ -112,7 +106,7 @@ export class ProcessEngineService implements IProcessEngineService {
 
   }
 
-  private formWidgetFieldIsEnum(formWidgetField: IFormWidgetField<any>): formWidgetField is IFormWidgetEnumField {
+  public formWidgetFieldIsEnum(formWidgetField: IFormWidgetField<any>): formWidgetField is IFormWidgetEnumField {
     return formWidgetField.type === FormWidgetFieldType.enumeration;
   }
 
@@ -160,9 +154,9 @@ export class ProcessEngineService implements IProcessEngineService {
       };
 
       if (action.key === 'confirm') {
-        confirmAction.action = ConfirmWidgetActionType.proceed;
+        confirmAction.action = UserTaskProceedAction.proceed;
       } else if (action.key === 'cancel' || action.isCancel === true) {
-        confirmAction.action = ConfirmWidgetActionType.cancel;
+        confirmAction.action = UserTaskProceedAction.cancel;
       }
 
       return confirmAction;

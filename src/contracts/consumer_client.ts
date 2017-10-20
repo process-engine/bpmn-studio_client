@@ -1,4 +1,12 @@
-import {ILoginResult, IPagination, IProcessDefEntity, ITokenRepository, IUserTaskConfig, IUserTaskEntity, ProcessId, UserTaskId} from './index';
+import {ILoginResult,
+  IPagination,
+  IProcessDefEntity,
+  ITokenRepository,
+  IUserTaskConfig,
+  IUserTaskEntity,
+  ProcessId,
+  UserTaskId,
+  UserTaskProceedAction} from './index';
 
 export interface IConsumerClient {
   config: any;
@@ -10,6 +18,5 @@ export interface IConsumerClient {
   startProcessByKey(processDefKey: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
-  proceedUserTask(finishedTask: IUserTaskConfig): Promise<void>;
-  cancelUserTask(taskToCancel: IUserTaskConfig): Promise<void>;
+  proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
 }
