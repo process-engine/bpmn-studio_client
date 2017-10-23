@@ -161,6 +161,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
         userTaskResult.key = ConfirmAction.confirm;
       }
     }
+
     const messageData: any = {
       action: MessageAction.proceed,
       token: userTaskResult,

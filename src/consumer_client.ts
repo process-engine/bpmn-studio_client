@@ -8,7 +8,6 @@ import {
   ILoginResult,
   ILogoutResult,
   IMessage,
-  IMessageBusService,
   IPagination,
   IProcessDefEntity,
   IProcessEngineService,
@@ -22,12 +21,10 @@ import {
 
 export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
   private container: InvocationContainer;
-  private messageBusService: IMessageBusService;
   private authService: IAuthenticationService;
   private processEngineService: IProcessEngineService;
 
   public config: any = {};
-  private loginToken: string;
 
   constructor() {
     super({wildcard: true});
