@@ -98,7 +98,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     let eventData: any = message;
     if (this.messageBusService.messageIsDataMessage(message)) {
       const messageIsUserTask: boolean = message.data &&
-                                message.data.action === 'userTask';
+                                         message.data.action === 'userTask';
 
       if (messageIsUserTask) {
         event = 'renderUserTask';
