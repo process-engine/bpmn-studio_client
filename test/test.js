@@ -5,7 +5,7 @@ const util = require('util');
 async function run() {
   await clientInstance.initialize();
 
-  clientInstance.on('renderUserTask', (userTaskConfig) => {
+  clientInstance.on('*', (userTaskConfig) => {
     console.log(userTaskConfig);
   });
 }
