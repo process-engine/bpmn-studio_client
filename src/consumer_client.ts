@@ -99,4 +99,8 @@ export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
   public proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void> {
     return this.processEngineService.proceedUserTask(finishedTask, proceedAction);
   }
+
+  public cancelUserTask(userTaskId: string): Promise<void> {
+    return this.processEngineService.cancelUserTask(userTaskId);
+  }
 }

@@ -23,6 +23,8 @@ import {
   IUserTaskConfig,
   IUserTaskEntity,
   IUserTaskMessageData,
+  MessageAction,
+  MessageEventType,
   ProcessId,
   SpecificFormWidgetField,
   UiConfigLayoutElement,
@@ -124,13 +126,24 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
       }
     }
     const messageData: any = {
-      action: 'proceed',
+      action: MessageAction.proceed,
       token: userTaskResult,
     };
 
     const proceedMessage: IDataMessage = this.messageBusService.createDataMessage(messageData);
 
     return this.messageBusService.sendMessage(`/processengine/node/${finishedTask.id}`, proceedMessage);
+  }
+
+  public async cancelUserTask(userTaskId: string): Promise<void> {
+    const messageData: any = {
+      action: MessageAction.event,
+      eventType: MessageEventType.cancel,
+    };
+
+    const cancelMessage: IDataMessage = this.messageBusService.createDataMessage(messageData);
+
+    return this.messageBusService.sendMessage(`/processengine/node/${userTaskId}`, cancelMessage);
   }
 
   private getUserTaskConfigFromUserTaskData(userTaskData: IUserTaskMessageData): IUserTaskConfig {

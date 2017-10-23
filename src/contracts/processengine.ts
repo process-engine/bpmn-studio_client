@@ -18,6 +18,7 @@ export interface IProcessEngineService extends EventEmitter2 {
   getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
+  cancelUserTask(userTaskId: string): Promise<void>;
 }
 
 export interface IProcessEngineRepository {

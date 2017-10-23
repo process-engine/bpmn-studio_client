@@ -23,7 +23,7 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
     });
   }
 
-  public createDataMessage(data: any): IDataMessage {
+  public createDataMessage(data: any, participantId?: string): IDataMessage {
     const message: IDataMessage = {
       data: data,
       metadata: {
@@ -36,6 +36,12 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
     const token: string = this.tokenRepository.getToken();
     if (token !== undefined && token !== null) {
       message.metadata.token = token;
+    }
+
+    if (participantId !== undefined && participantId !== null) {
+      message.metadata.options = {
+        participantId: participantId,
+      };
     }
 
     return message;
