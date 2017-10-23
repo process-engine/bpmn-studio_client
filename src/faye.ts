@@ -2,24 +2,66 @@ import {EventEmitter2} from 'eventemitter2';
 import * as Faye from 'faye';
 import {IAuthenticationService, IDataMessage, IMessage, IMessageBusService, ITokenRepository, MessageAction} from './contracts/index';
 
+interface SubscriptionObject {
+  subscription: any;
+  callback: Function;
+}
+
 export class MessageBusService extends EventEmitter2 implements IMessageBusService {
 
   private tokenRepository: ITokenRepository;
   private fayeClient: any;
-  private messageHandlers: Array<(channel: string, message: any) => void> = new Array();
+  private subscriptions: {[channel: string]: Array<SubscriptionObject>} = {};
 
   public config: any = null;
 
   constructor(tokenRepository: ITokenRepository) {
-    super({wildcard: true});
+    super({
+      wildcard: true,
+      newListener: true,
+    });
     this.tokenRepository = tokenRepository;
   }
 
   public initialize(): void {
     this.fayeClient = new Faye.Client(this.config.routes.messageBus);
 
-    this.fayeClient.subscribe('/**').withChannel((channel: string, message: any) => {
-      this.emit(channel, message);
+    this.on('newListener', (channel: string, callback: Function) => {
+      if (channel === 'newListener' || channel === 'removeListener') {
+        return;
+      }
+
+      if (this.subscriptions[channel] === undefined) {
+        this.subscriptions[channel] = [];
+      }
+
+      const subscription: any = this.fayeClient.subscribe(channel).withChannel(callback);
+      this.subscriptions[channel].push({
+        subscription: subscription,
+        callback: callback,
+      });
+    });
+
+    this.on('removeListener', (channel: string, callback: Function) => {
+      if (channel === 'newListener' || channel === 'removeListener') {
+        return;
+      }
+      // if nobody ever subscribed to this channel, do nothing
+      if (this.subscriptions[channel] === undefined) {
+        return;
+      }
+
+      const subscriptionIndex: number = this.subscriptions[channel].findIndex((subscriptionObject: SubscriptionObject) => {
+        return subscriptionObject.callback === callback;
+      });
+
+      // if the subscription couldn't be found, do nothing
+      if (subscriptionIndex < 0) {
+        return;
+      }
+
+      this.subscriptions[channel][subscriptionIndex].subscription.cancel();
+      delete this.subscriptions[channel][subscriptionIndex];
     });
   }
 

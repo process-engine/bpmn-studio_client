@@ -11,6 +11,7 @@ import {
   IFormWidgetEnumValue,
   IFormWidgetField,
   IFormWidgetStringField,
+  IIdentity,
   IMessage,
   IMessageBusService,
   INodeDefFormField,
@@ -48,29 +49,64 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
   }
 
   public initialize(): void {
-    const eventHandler: Function = (channelName: string, ...parameter: Array<any>): void => {
-      if (!this.isAllowedToHandle(channelName)) {
-        return;
-      }
+    // subscribe to the channel of the default-identity
+    this.messageBusService.on('/role/guest', this.handleMessage);
 
-      let event: string = channelName;
-      const message: IMessage = parameter[0];
-      if (this.messageBusService.messageIsDataMessage(message)) {
-        const messageIsUserTask = message.data &&
-                                  message.data.action === 'userTask';
+    // make a proxy for setIdentity, so we notice when the identity changes
+    this.tokenRepository.setIdentity = new Proxy(this.tokenRepository.setIdentity, {
+      apply: (target: (identity: IIdentity) => void, repositoryInstance: ITokenRepository, argumentsList: Array<any>): void => {
+        this.updateIdentity(argumentsList[0]);
 
-        if (messageIsUserTask) {
-          event = 'renderUserTask';
-          parameter[0] = this.getUserTaskConfigFromUserTaskData(message.data.data);
-        }
-      }
-
-      this.emit(event, ...parameter);
-    };
-
-    this.messageBusService.on('*', function(...parameter: Array<any>): void {
-      eventHandler(this.event, ...parameter);
+        return target.apply(repositoryInstance, argumentsList);
+      },
     });
+  }
+
+  private updateIdentity(newIdentity?: IIdentity): void {
+    let oldRoles: Array<string> = ['guest'];
+    const oldIdentity: IIdentity = this.tokenRepository.getIdentity();
+    if (oldIdentity !== undefined && oldIdentity !== null) {
+      oldRoles = oldIdentity.roles;
+    }
+
+    let newRoles: Array<string> = ['guest'];
+    if (newIdentity !== undefined && newIdentity !== null) {
+      newRoles = newIdentity.roles;
+    }
+
+    const lostRoles: Array<string> = oldRoles.filter((oldRole: string) => {
+      return !newRoles.includes(oldRole);
+    });
+
+    const accuiredRoles: Array<string> = newRoles.filter((newRole: string) => {
+      return !oldRoles.includes(newRole);
+    });
+
+    for (const role of lostRoles) {
+      this.messageBusService.off(`/role/${role}`, this.handleMessage);
+    }
+
+    for (const role of accuiredRoles) {
+      this.messageBusService.on(`/role/${role}`, this.handleMessage);
+    }
+  }
+
+  // this is an arrow-function so that it is always called in this services context
+  // even when it is just passed through like in `updateIdentity()`
+  private handleMessage = (channel: string, message: IMessage): void => {
+    let event: string = channel;
+    let eventData: any = message;
+    if (this.messageBusService.messageIsDataMessage(message)) {
+      const messageIsUserTask: boolean = message.data &&
+                                message.data.action === 'userTask';
+
+      if (messageIsUserTask) {
+        event = 'renderUserTask';
+        eventData = this.getUserTaskConfigFromUserTaskData(message.data.data);
+      }
+    }
+
+    this.emit(event, eventData);
   }
 
   public getProcessDefList(limit: number = 100, offset: number = 0): Promise<IPagination<IProcessDefEntity>> {
@@ -226,21 +262,5 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     });
 
     return confirmWidgetConfig;
-  }
-
-  private isAllowedToHandle(channel: string): boolean {
-    let roles: Array<string> = ['guest']; // default roles
-    if (this.tokenRepository.getIdentity()) {
-      roles = this.tokenRepository.getIdentity().roles;
-    }
-
-    const rolePrefix: string = '/role/';
-    if (!channel.startsWith(rolePrefix)) {
-      return true;
-    }
-
-    const handledRole: string = channel.substr(rolePrefix.length);
-
-    return roles.includes(handledRole);
   }
 }
