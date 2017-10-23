@@ -46,6 +46,7 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
       if (channel === 'newListener' || channel === 'removeListener') {
         return;
       }
+
       // if nobody ever subscribed to this channel, do nothing
       if (this.subscriptions[channel] === undefined) {
         return;
