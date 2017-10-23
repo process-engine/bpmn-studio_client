@@ -18,13 +18,13 @@ export interface IProcessEngineService extends EventEmitter2 {
   getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
-  cancelUserTask(userTaskId: string): Promise<void>;
+  cancelUserTask(userTaskToCancel: IUserTaskConfig): Promise<void>;
 }
 
 export interface IProcessEngineRepository {
   getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>>;
-  startProcessById(processDefId: string): Promise<ProcessId>;
-  startProcessByKey(processDefKey: string): Promise<ProcessId>;
+  startProcessById(processDefId: string, participantId?: string): Promise<ProcessId>;
+  startProcessByKey(processDefKey: string, participantId?: string): Promise<ProcessId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;

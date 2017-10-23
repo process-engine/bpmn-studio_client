@@ -2,17 +2,50 @@ const client = require('../dist/commonjs/index.js').ConsumerClient;
 const clientInstance = new client();
 const util = require('util');
 
+function PromiseWait(timeout = 3000) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, timeout)
+  });
+}
+
 async function run() {
   await clientInstance.initialize();
 
-  clientInstance.on('*', (userTaskConfig) => {
-    console.log(userTaskConfig);
+  clientInstance.on('renderUserTask', (userTaskConfig) => {
+    console.log('process', userTaskConfig.userTaskEntity.process.id);
   });
 
-  await clientInstance.login('admin', 'admin');
+  clientInstance.on('processEnd', (processId) => {
+    console.log('processEnd', processId);
+  });
+
+  const processInstanceId = await clientInstance.startProcessByKey('reservation');
+  await PromiseWait();
+  let continueReservationTaskList = await clientInstance.getUserTaskListByProcessInstanceId(processInstanceId);
+  let continueReservationTask = await clientInstance.getUserTaskConfig(continueReservationTaskList.data[continueReservationTaskList.data.length - 1].id);
+  continueReservationTask.widgetConfig.fields[0].value = 'smallClass';
+  await clientInstance.proceedUserTask(continueReservationTask, 'proceed');
+  await PromiseWait();
+  continueReservationTaskList = await clientInstance.getUserTaskListByProcessInstanceId(processInstanceId);
+  continueReservationTask = await clientInstance.getUserTaskConfig(continueReservationTaskList.data[continueReservationTaskList.data.length - 1].id);
+  await clientInstance.proceedUserTask(continueReservationTask, 'cancel');
+
+
+
+  //await clientInstance.login('admin', 'admin');
   //clientInstance.logout();
-  clientInstance.cancelUserTask('b14e283a-0b44-405f-8e80-cf563f21832a');
+/*
+  const userTasks = await clientInstance.getUserTaskList()
+  for (const userTask of userTasks.data) {
+    const someUserTask = await clientInstance.getUserTaskConfig(userTasks.data[userTasks.data.length - 1].id)
+    await clientInstance.cancelUserTask(someUserTask);
+  }
+
+  console.log('task canceled')
+  */
 }
 
-run();
+run().catch(console.log);
 

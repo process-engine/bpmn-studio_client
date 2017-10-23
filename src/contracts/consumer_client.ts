@@ -21,5 +21,5 @@ export interface IConsumerClient {
   getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
-  cancelUserTask(userTaskId: string): Promise<void>;
+  cancelUserTask(userTaskToCancel: IUserTaskConfig): Promise<void>;
 }

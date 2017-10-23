@@ -5,7 +5,7 @@ import {EventEmitter2} from 'eventemitter2';
 export {IMessage, IDataMessage} from '@essential-projects/messagebus_contracts';
 
 export interface IMessageBusService extends EventEmitter2 {
-  createDataMessage(data: any): IDataMessage;
+  createDataMessage(data: any, participantId?: string): IDataMessage;
   sendMessage(channel: string, message: any): Promise<any>;
   messageIsDataMessage(message: any): message is IDataMessage;
 }

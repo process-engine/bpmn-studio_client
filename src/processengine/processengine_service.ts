@@ -40,6 +40,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
   private processEngineRepository: IProcessEngineRepository;
   private messageBusService: IMessageBusService;
   private tokenRepository: ITokenRepository;
+  private participantIds: {[processInstanceId: string]: string} = {};
 
   constructor(processEngineRepository: IProcessEngineRepository, messageBusService: IMessageBusService, tokenRepository: ITokenRepository) {
     super({wildcard: true});
@@ -97,12 +98,26 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     let event: string = channel;
     let eventData: any = message;
     if (this.messageBusService.messageIsDataMessage(message)) {
-      const messageIsUserTask: boolean = message.data &&
-                                         message.data.action === 'userTask';
-
+      const messageIsUserTask: boolean = message.data && message.data.action === 'userTask';
       if (messageIsUserTask) {
         event = 'renderUserTask';
         eventData = this.getUserTaskConfigFromUserTaskData(message.data.data);
+      }
+
+      const messageIsProcessEnd: boolean = message.data && message.data.action === 'endEvent';
+      if (messageIsProcessEnd) {
+        eventData = undefined;
+        event = 'processEnd';
+
+        // for some reason, the backend doesn't give us the processInstanceId of the process that ended,
+        // but if the message comes via a participant-channel (instead of a role-channel), and we are
+        // the source of the participant-id in the channel name, than we know what process ended
+        if (channel.startsWith('/participant/')) {
+          const participantId: string = channel.split('/')[2];
+          const processInstanceId: string = this.getProcessIdFromParticipantId(participantId);
+          eventData = processInstanceId;
+          this.removeParticipantId(processInstanceId);
+        }
       }
     }
 
@@ -113,12 +128,20 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     return this.processEngineRepository.getProcessDefList(limit, offset);
   }
 
-  public startProcessById(processDefId: string): Promise<ProcessId> {
-    return this.processEngineRepository.startProcessById(processDefId);
+  public async startProcessById(processDefId: string): Promise<ProcessId> {
+    const participandId: string = this.generateParticipantId();
+    const processInstanceId: string = await this.processEngineRepository.startProcessById(processDefId);
+    this.participantIds[processInstanceId] = participandId;
+
+    return processInstanceId;
   }
 
-  public startProcessByKey(processDefKey: string): Promise<ProcessId> {
-    return this.processEngineRepository.startProcessByKey(processDefKey);
+  public async startProcessByKey(processDefKey: string): Promise<ProcessId> {
+    const participandId: string = this.generateParticipantId();
+    const processInstanceId: string = await this.processEngineRepository.startProcessByKey(processDefKey);
+    this.participantIds[processInstanceId] = participandId;
+
+    return processInstanceId;
   }
 
   public getUserTaskList(): Promise<IPagination<IUserTaskEntity>> {
@@ -167,20 +190,22 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
       token: userTaskResult,
     };
 
-    const proceedMessage: IDataMessage = this.messageBusService.createDataMessage(messageData);
+    const participandId: string = this.getParticipantId(finishedTask.userTaskEntity.process.id);
+    const proceedMessage: IDataMessage = this.messageBusService.createDataMessage(messageData, participandId);
 
     return this.messageBusService.sendMessage(`/processengine/node/${finishedTask.id}`, proceedMessage);
   }
 
-  public async cancelUserTask(userTaskId: string): Promise<void> {
+  public async cancelUserTask(userTaskToCancel: IUserTaskConfig): Promise<void> {
     const messageData: any = {
       action: MessageAction.event,
       eventType: MessageEventType.cancel,
     };
 
-    const cancelMessage: IDataMessage = this.messageBusService.createDataMessage(messageData);
+    const participandId: string = this.getParticipantId(userTaskToCancel.userTaskEntity.process.id);
+    const cancelMessage: IDataMessage = this.messageBusService.createDataMessage(messageData, participandId);
 
-    return this.messageBusService.sendMessage(`/processengine/node/${userTaskId}`, cancelMessage);
+    return this.messageBusService.sendMessage(`/processengine/node/${userTaskToCancel.id}`, cancelMessage);
   }
 
   private getUserTaskConfigFromUserTaskData(userTaskData: IUserTaskMessageData): IUserTaskConfig {
@@ -263,5 +288,39 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     });
 
     return confirmWidgetConfig;
+  }
+
+  private getParticipantId(processInstanceId: string): string {
+    if (this.participantIds[processInstanceId] === undefined) {
+      this.participantIds[processInstanceId] = this.generateParticipantId();
+    }
+
+    return this.participantIds[processInstanceId];
+  }
+
+  private generateParticipantId(): string {
+    const newParticipantId: string = '3';
+    this.messageBusService.on(`/participant/${newParticipantId}`, this.handleMessage);
+
+    return newParticipantId;
+  }
+
+  private removeParticipantId(processInstanceId: string): void {
+    if (this.participantIds[processInstanceId] === undefined) {
+      return;
+    }
+
+    this.messageBusService.off(`/participant/${this.participantIds[processInstanceId]}`, this.handleMessage);
+    delete this.participantIds[processInstanceId];
+  }
+
+  private getProcessIdFromParticipantId(participantId: string): string {
+    for (const processInstanceId in this.participantIds) {
+      if (this.participantIds[processInstanceId] === participantId) {
+        return processInstanceId;
+      }
+    }
+
+    return undefined;
   }
 }
