@@ -91,7 +91,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     }
   }
 
-  // this is an arrow-function so that it is always called in this services context
+  // this is an arrow-function so that it is always called in this services context,
   // even when it is just passed through like in `updateIdentity()`
   private handleMessage = (channel: string, message: IMessage): void => {
     let event: string = channel;
