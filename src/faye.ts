@@ -1,5 +1,6 @@
 import {EventEmitter2} from 'eventemitter2';
 import * as Faye from 'faye';
+import {v4} from 'uuid-browser';
 import {IAuthenticationService, IDataMessage, IMessage, IMessageBusService, ITokenRepository, MessageAction} from './contracts/index';
 
 interface SubscriptionObject {
@@ -70,7 +71,7 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
     const message: IDataMessage = {
       data: data,
       metadata: {
-        id: undefined,
+        id: v4(),
         applicationId: undefined,
         token: undefined,
       },
