@@ -67,7 +67,7 @@ run();
 
 In aurelia, you should create a new consumerClient-feature, so you can inject the client where you need it (this is how it's used in [charon](https://github.com/process-engine/charon)):
 
-*aurelia.json* (make aurelia know about the package)
+*aurelia.json* (make aurelia knows about the package)
 
 ```JSON
 ...
