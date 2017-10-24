@@ -4,7 +4,7 @@ import {ILoginResult,
   ITokenRepository,
   IUserTaskConfig,
   IUserTaskEntity,
-  ProcessId,
+  ProcessInstanceId,
   UserTaskId,
   UserTaskProceedAction} from './index';
 
@@ -14,8 +14,8 @@ export interface IConsumerClient {
   login(username: string, password: string): Promise<ILoginResult>;
   logout(): Promise<boolean>;
   getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>>;
-  startProcessById(processDefId: string): Promise<ProcessId>;
-  startProcessByKey(processDefKey: string): Promise<ProcessId>;
+  startProcessById(processDefId: string): Promise<ProcessInstanceId>;
+  startProcessByKey(processDefKey: string): Promise<ProcessInstanceId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;

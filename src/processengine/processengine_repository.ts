@@ -10,7 +10,7 @@ import {
   ITokenRepository,
   IUserTaskEntity,
   IUserTaskMessageData,
-  ProcessId,
+  ProcessInstanceId,
 } from '../contracts/index';
 import {HttpHeader, isErrorResult, throwOnErrorResponse} from '../http';
 
@@ -36,7 +36,7 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
     return throwOnErrorResponse<IPagination<IProcessDefEntity>>(response);
   }
 
-  public async startProcessById(processDefId: string, participantId?: string): Promise<ProcessId> {
+  public async startProcessById(processDefId: string, participantId?: string): Promise<ProcessInstanceId> {
     const url: string = this.config.routes.startProcess;
     const response: Response = await fetch(url, {
       method: 'post',
@@ -51,10 +51,10 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
       }),
     });
 
-    return throwOnErrorResponse<ProcessId>(response);
+    return throwOnErrorResponse<ProcessInstanceId>(response);
   }
 
-  public async startProcessByKey(processDefKey: string, participantId?: string): Promise<ProcessId> {
+  public async startProcessByKey(processDefKey: string, participantId?: string): Promise<ProcessInstanceId> {
     const url: string = this.config.routes.startProcess;
     const response: Response = await fetch(url, {
       method: 'post',
@@ -69,7 +69,7 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
       }),
     });
 
-    return throwOnErrorResponse<ProcessId>(response);
+    return throwOnErrorResponse<ProcessInstanceId>(response);
   }
 
   public async getUserTaskList(): Promise<IPagination<IUserTaskEntity>> {
