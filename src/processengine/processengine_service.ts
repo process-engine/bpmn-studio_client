@@ -27,7 +27,7 @@ import {
   IUserTaskMessageData,
   MessageAction,
   MessageEventType,
-  ProcessId,
+  ProcessInstanceId,
   SpecificFormWidgetField,
   UiConfigLayoutElement,
   UserTaskId,
@@ -129,7 +129,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     return this.processEngineRepository.getProcessDefList(limit, offset);
   }
 
-  public async startProcessById(processDefId: string): Promise<ProcessId> {
+  public async startProcessById(processDefId: string): Promise<ProcessInstanceId> {
     const participandId: string = this.generateParticipantId();
     const processInstanceId: string = await this.processEngineRepository.startProcessById(processDefId);
     this.participantIds[processInstanceId] = participandId;
@@ -137,7 +137,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     return processInstanceId;
   }
 
-  public async startProcessByKey(processDefKey: string): Promise<ProcessId> {
+  public async startProcessByKey(processDefKey: string): Promise<ProcessInstanceId> {
     const participandId: string = this.generateParticipantId();
     const processInstanceId: string = await this.processEngineRepository.startProcessByKey(processDefKey);
     this.participantIds[processInstanceId] = participandId;

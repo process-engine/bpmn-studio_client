@@ -14,7 +14,7 @@ import {
   ITokenRepository,
   IUserTaskConfig,
   IUserTaskEntity,
-  ProcessId,
+  ProcessInstanceId,
   UserTaskId,
   UserTaskProceedAction,
 } from './contracts/index';
@@ -44,8 +44,8 @@ export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
   public async initialize(tokenRepository?: ITokenRepository): Promise<void> {
     registerInContainer(this.container, tokenRepository, this.config.baseRoute);
 
-    this.authService = await this.container.resolveAsync<IAuthenticationService>('AuthenticationService', undefined, this.config.authService);
-    this.processEngineService = await this.container.resolveAsync<IProcessEngineService>('ProcessEngineService', undefined, this.config.processEngineService);
+    this.authService = await this.container.resolveAsync<IAuthenticationService>('AuthenticationService');
+    this.processEngineService = await this.container.resolveAsync<IProcessEngineService>('ProcessEngineService');
 
     const eventHandler: Function = (eventName: string, ...parameter: Array<any>): void => {
       this.emit(eventName, ...parameter);
@@ -69,11 +69,11 @@ export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
     return this.processEngineService.getProcessDefList(limit, offset);
   }
 
-  public startProcessById(processDefId: string): Promise<ProcessId> {
+  public startProcessById(processDefId: string): Promise<ProcessInstanceId> {
     return this.processEngineService.startProcessById(processDefId);
   }
 
-  public startProcessByKey(processDefKey: string): Promise<ProcessId> {
+  public startProcessByKey(processDefKey: string): Promise<ProcessInstanceId> {
     return this.processEngineService.startProcessByKey(processDefKey);
   }
 

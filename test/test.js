@@ -12,7 +12,8 @@ function PromiseWait(timeout = 3000) {
 
 async function run() {
   await clientInstance.initialize();
-
+  console.log (await clientInstance.getProcessDefList());
+/*
   clientInstance.on('renderUserTask', (userTaskConfig) => {
     console.log('process', userTaskConfig.userTaskEntity.process.id);
   });
@@ -33,7 +34,7 @@ async function run() {
   await clientInstance.proceedUserTask(continueReservationTask, 'cancel');
 
 
-
+*/
   //await clientInstance.login('admin', 'admin');
   //clientInstance.logout();
 /*

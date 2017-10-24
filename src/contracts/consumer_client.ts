@@ -10,7 +10,7 @@ import {ILoginResult,
 
 export interface IConsumerClient {
   config: any;
-  initialize(): Promise<void>;
+  initialize(tokenRepository?: ITokenRepository): Promise<void>;
   login(username: string, password: string): Promise<ILoginResult>;
   logout(): Promise<boolean>;
   getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>>;

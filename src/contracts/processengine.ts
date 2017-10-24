@@ -6,13 +6,13 @@ export {IProcessDefEntity, IUserTaskEntity, IUserTaskMessageData} from '@process
 import {IPagination, IProcessDefEntity} from './index';
 
 // Service and Repository interfaces
-export type ProcessId = string;
+export type ProcessInstanceId = string;
 export type UserTaskId = string;
 
 export interface IProcessEngineService extends EventEmitter2 {
   getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>;
-  startProcessById(processDefId: string): Promise<ProcessId>;
-  startProcessByKey(processDefKey: string): Promise<ProcessId>;
+  startProcessById(processDefId: string): Promise<ProcessInstanceId>;
+  startProcessByKey(processDefKey: string): Promise<ProcessInstanceId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
@@ -23,8 +23,8 @@ export interface IProcessEngineService extends EventEmitter2 {
 
 export interface IProcessEngineRepository {
   getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>>;
-  startProcessById(processDefId: string, participantId?: string): Promise<ProcessId>;
-  startProcessByKey(processDefKey: string, participantId?: string): Promise<ProcessId>;
+  startProcessById(processDefId: string, participantId?: string): Promise<ProcessInstanceId>;
+  startProcessByKey(processDefKey: string, participantId?: string): Promise<ProcessInstanceId>;
   getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
