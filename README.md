@@ -186,7 +186,7 @@ await consumerClient.initialize();
 
 #### login
 
-logs in the user
+tries to login with the given credentials
 
 ```TypeScript
 // definition

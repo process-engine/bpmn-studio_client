@@ -17,6 +17,7 @@ import {HttpHeader, isErrorResult, throwOnErrorResponse} from '../http';
 const {fetch, Headers, Request, Response} = fetch_ponyfill();
 
 export class ProcessEngineRepository implements IProcessEngineRepository {
+
   public config: any = null;
   private tokenRepository: ITokenRepository;
   private messageBusService: IMessageBusService;

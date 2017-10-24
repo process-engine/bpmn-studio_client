@@ -229,7 +229,6 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     }
 
     return result;
-
   }
 
   public formWidgetFieldIsEnum(formWidgetField: IFormWidgetField<any>): formWidgetField is IFormWidgetEnumField {
