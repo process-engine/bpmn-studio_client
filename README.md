@@ -23,7 +23,8 @@ npm install --save @process-engine/consumer_client
 
 ### Usage
 
-To use this package, import the `ConsumerClient`-class, make a new instance and use its methods, and initialize it.
+To use this package, import the `ConsumerClient`-class, make a new instance and initialize it. After that,
+you can start using its methods, 
 
 Before initializing it, you can set its `config` as described in the API-doc
 
