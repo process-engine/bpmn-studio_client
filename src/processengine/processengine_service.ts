@@ -1,4 +1,5 @@
 import {EventEmitter2} from 'eventemitter2';
+import {v4} from 'uuid-browser';
 import {
   ConfirmAction,
   FormWidgetFieldType,
@@ -299,7 +300,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
   }
 
   private generateParticipantId(): string {
-    const newParticipantId: string = '3';
+    const newParticipantId: string = v4();
     this.messageBusService.on(`/participant/${newParticipantId}`, this.handleMessage);
 
     return newParticipantId;
