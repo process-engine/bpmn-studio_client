@@ -97,8 +97,7 @@ In aurelia, you should create a new consumerClient-feature, so you can inject th
     {
       "name": "bluebird",
       "main": "./js/browser/bluebird",
-      "path": "../node_modules/bluebird",
-      "resources": []
+      "path": "../node_modules/bluebird"
     },
     "eventemitter2",
     "node-uuid"
