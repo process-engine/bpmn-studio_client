@@ -12,7 +12,7 @@ function PromiseWait(timeout = 3000) {
 
 async function run() {
   await clientInstance.initialize();
-  console.log (await clientInstance.getProcessDefList());
+  console.log (await clientInstance.getUserTaskConfig('11de295d-a592-467a-ab5d-e49bdcb0ceaf'));
 /*
   clientInstance.on('renderUserTask', (userTaskConfig) => {
     console.log('process', userTaskConfig.userTaskEntity.process.id);

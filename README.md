@@ -269,7 +269,7 @@ const list = await consumerClient.getProcessDefList();
 }*/
 ```
 
-#### startProcessById(processDefId: string): Promise<ProcessId>
+#### startProcessById
 
 Starts a new Instance of the process with the given Id
 
@@ -278,15 +278,249 @@ Starts a new Instance of the process with the given Id
 startProcessById(processDefId: string): Promise<ProcessInstanceId>
 
 //example
-const ProcessInstanceId = await consumerClient.startProcessById('5c64bfbc-45c1-4dd8-a69d-325e8610d6bd')
+const processInstanceId = await consumerClient.startProcessById('5c64bfbc-45c1-4dd8-a69d-325e8610d6bd');
 
-// processId: '6b1c43ae-bcc6-4ec5-adf1-3350916feaf7
+// processInstanceId: '6b1c43ae-bcc6-4ec5-adf1-3350916feaf7
 ```
 
-  startProcessByKey(processDefKey: string): Promise<ProcessId>;
-  getUserTaskList(): Promise<IPagination<IUserTaskEntity>>;
-  getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>;
-  getUserTaskListByProcessInstanceId(processInstanceId: string): Promise<IPagination<IUserTaskEntity>>;
-  getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
-  proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
-  cancelUserTask(userTaskToCancel: IUserTaskConfig): Promise<void>;
+#### startProcessByKey
+
+Starts a new Instance of the process with the given key
+
+```TypeScript
+//definition
+startProcessById(processDefKey: string): Promise<ProcessInstanceId>
+
+//example
+const processInstanceId = await consumerClient.startProcessByKey('CreateProcessDef');
+
+// processInstanceId: '6b1c43ae-bcc6-4ec5-adf1-3350916feaf7
+```
+
+#### getUserTaskList
+
+fetches the list of all available userTasks. Because this always fetches all the userTasks, you don't need to set `limit` and `offset`, like you can for `getProcessDefList`
+
+```TypeScript
+// definition
+getUserTaskList(): Promise<IPagination<IUserTaskEntity>>
+
+// example
+const userTaskList = await consumerClient.getUserTaskList()
+
+/* userTaskList:
+{ count: 3,
+  offset: 0,
+  limit: 'ALL',
+  data: [{
+    id: 'b061e1ee-217c-4e04-b260-16090ad410f4',
+    name: 'Wähle Fzg.-Klasse',
+    key: 'ut_WaehleKlasse',
+    type: 'bpmn:UserTask',
+    state: 'end',
+    participant: '653ecef5-2458-4342-a03f-caba222ca360',
+    application: null,
+    processToken: [Object],
+    instanceCounter: 0,
+    nodeDef: [Object],
+    process: [Object]
+  }, { id: 'f4def4dc-b454-4a36-b4b0-42865141a061',
+    name: 'Wähle Fzg.-Klasse',
+    key: 'ut_WaehleKlasse',
+    type: 'bpmn:UserTask',
+    state: 'end',
+    participant: null,
+    application: null,
+    processToken: [Object],
+    instanceCounter: 0,
+    nodeDef: [Object],
+    process: [Object]
+  }, { id: '11de295d-a592-467a-ab5d-e49bdcb0ceaf',
+    name: 'Wähle Fzg.-Klasse',
+    key: 'ut_WaehleKlasse',
+    type: 'bpmn:UserTask',
+    state: 'wait',
+    participant: null,
+    application: null,
+    processToken: [Object],
+    instanceCounter: 0,
+    nodeDef: [Object],
+    process: [Object]
+  }]
+}*/
+```
+
+#### getUserTaskListByProcessDefId
+
+fetches the list of currently waiting userTasks that belong to the processDefinition with a given Id. Because this always fetches all the userTasks, you don't need to set `limit` and `offset`, like you can for `getProcessDefList`
+
+```TypeScript
+// definition
+getUserTaskListByProcessDefId(processDefId: string): Promise<IPagination<IUserTaskEntity>>
+
+// example
+const userTaskList = await consumerClient.getUserTaskListByProcessDefId('f1a8b520-f983-4ba6-8485-f8d7c331df9a')
+
+/* userTaskList:
+{
+  count: 0,
+  offset: 0,
+  limit: 'ALL',
+  data: []
+}*/
+```
+
+#### getUserTaskListByProcessInstanceId
+
+fetches the list of all available userTasks that belong to the processInstance with a given Id. Because this always fetches all the userTasks, you don't need to set `limit` and `offset`, like you can for `getProcessDefList`
+
+```TypeScript
+// definition
+getUserTaskListByProcessInstanceId(processDefId: string): Promise<IPagination<IUserTaskEntity>>
+
+// example
+const userTaskList = await consumerClient.getUserTaskListByProcessInstanceId('645f9869-9b59-4a15-99ee-7a54bbe43aca')
+
+/* userTaskList:
+{ count: 2,
+  offset: 0,
+  limit: 'ALL',
+  data: [{
+    id: '7bc9457e-7f3a-42b7-9370-2cfc3b91262e',
+    name: 'Wähle Fzg.-Klasse',
+    key: 'ut_WaehleKlasse',
+    type: 'bpmn:UserTask',
+    state: 'end',
+    participant: null,
+    application: null,
+    processToken: [Object],
+    instanceCounter: 0,
+    nodeDef: [Object],
+    process: [Object]
+  }, {
+    id: '4fc24300-5c65-48b7-9b2e-9e2f055490e8',
+    name: 'Reservierung abschliessen',
+    key: 'ut_Buche',
+    type: 'bpmn:UserTask',
+    state: 'end',
+    participant: null,
+    application: null,
+    processToken: [Object],
+    instanceCounter: 0,
+    nodeDef: [Object],
+    process: [Object]
+  }]
+}*/
+```
+
+#### getUserTaskConfig
+
+fetches the userTaskConfig of the userTask with a given Id. This userTaskConfig is basically all the interpreted and ready-to-go info you need, to display a userTask on the screen
+
+```TypeScript
+// definition
+getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>
+
+// example
+const userTaskConfig = await consumerClient.getUserTaskConfig('11de295d-a592-467a-ab5d-e49bdcb0ceaf'))
+/* userTaskConfig:
+{
+  userTaskEntity: [Object],
+  id: '11de295d-a592-467a-ab5d-e49bdcb0ceaf',
+  title: 'Wähle Fzg.-Klasse',
+  widgetType: 'form',
+  widgetConfig: {
+    fields: [
+      [Object],
+      [Object],
+      [Object]
+    ]
+  }
+}
+*/
+```
+
+#### proceedUserTask
+
+Tells the process-engine, that a userTask has been finished, an that the corresponding processInstance can continue
+
+```TypeScript
+// definition
+proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>
+
+// example
+// start a new reservation-process
+const processInstanceId = await clientInstance.startProcessByKey('reservation');
+
+// get the list of userTasks for that process
+let continueReservationTaskList = await clientInstance.getUserTaskListByProcessInstanceId(processInstanceId);
+
+// get the userTaskConfig for the newest userTask
+const newestReservationTask = continueReservationTaskList.data[continueReservationTaskList.data.length - 1];
+const continueReservationTaskConfig = await clientInstance.getUserTaskConfig(newestReservationTask.id);
+
+// update a value in that userTask, and tell the process-engine to continue
+continueReservationTaskConfig.widgetConfig.fields[0].value = 'smallClass';
+await clientInstance.proceedUserTask(continueReservationTaskConfig, 'proceed');
+```
+
+#### cancelUserTask
+
+Tells the process-engine to abort a userTask. This will only work, if the corresponding event is modeled on the userTask you're about to cancel
+
+```TypeScript
+// definition
+cancelUserTask(userTaskToCancel: IUserTaskConfig): Promise<void>;
+
+// example
+// start a new createProcess-process
+const processInstanceId = await clientInstance.startProcessByKey('CreateProcessDef');
+
+// get the userTaskConfig for the newest userTask
+const newestCreateProcessTask = continueReservationTaskList.data[continueReservationTaskList.data.length - 1];
+const createProcessTaskConfig = await clientInstance.getUserTaskConfig(newestCreateProcessTask.id);
+
+// change your mind, and tell the process-engine to cancel the userTask
+await clientInstance.cancelUserTask(createProcessTaskConfig);
+```
+
+### Events
+
+the ConsumerClient extends [EventEmitter2](https://github.com/asyncly/EventEmitter2), so you can register
+callbacks to be called when events happen. See EventEmitter2's documentation on how to register and unregister events.
+
+#### renderUserTask
+
+Fires, when the process-engine decided, that you could display a userTask
+
+```TypeScript
+consumerClient.on('renderUserTask', (userTaskConfig) => {
+  // do something with the userTaskConfig
+});
+```
+
+#### processEnd
+
+Fires, when the process-engine notified you, that a process ended. The process-engine doesn't tell us what
+process ended but using the internal participantId, the consumerClient can find that out if it interacted
+with that process before
+
+```TypeScript
+consumerClient.on('processEnd', (processInstanceId) => {
+  // Process with processInstanceId ended.
+  // processInstanceId might be undefined, if the consumerClient
+  // couldn't deduce it from the participantId
+});
+```
+
+#### [channelName]
+
+Every message the consumerClient receives from the process-engine via messagebus and that is not interpreted
+to be a `renderUserTask` or `processEnd` message, is forwarded to you. The name of the event will be the name
+of the channel the message was received on, but you can use wildcards to get all the messages
+
+```TypeScript
+consumerClient.on('*', (messagebusMessage) => {
+  // get all the messages for me, even when they are not 'renderUserTask' or 'processEnd'
+});
+```
