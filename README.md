@@ -187,7 +187,7 @@ await consumerClient.initialize();
 #### About pagination
 
 Any method that returns a `IPagination<T>` object will accept `limit` and `offset` parameters. You can use them to specify how many items you want in
-the resulting list. By default `limit` is set to `100` and `offset` is set to `0`.
+the resulting list. When `limit` is not given all items will be returned.
 
 #### login
 
@@ -229,7 +229,7 @@ fetches a list of processDefinitions. These can be used to start a new process. 
 
 ```TypeScript
 // definition
-getProcessDefList(limit: number = 100, offset: number = 0): Promise<IPagination<IProcessDefEntity>>
+getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>
 
 // example
 const list = await consumerClient.getProcessDefList();
@@ -237,7 +237,7 @@ const list = await consumerClient.getProcessDefList();
 /* list:
 { count: 2,
   offset: 0,
-  limit: 100,
+  limit: 'ALL',
   data: [{
     id: '5c64bfbc-45c1-4dd8-a69d-325e8610d6bd',
     name: 'Prozess erstellen',
@@ -308,7 +308,7 @@ fetches the list of available userTasks. See [here](#about-pagination) for detai
 
 ```TypeScript
 // definition
-getUserTaskList(limit: number = 100, offset: number = 0): Promise<IPagination<IUserTaskEntity>>
+getUserTaskList(limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>
 
 // example
 const userTaskList = await consumerClient.getUserTaskList()
@@ -316,7 +316,7 @@ const userTaskList = await consumerClient.getUserTaskList()
 /* userTaskList:
 { count: 3,
   offset: 0,
-  limit: '100',
+  limit: 'ALL',
   data: [{
     id: 'b061e1ee-217c-4e04-b260-16090ad410f4',
     name: 'Wähle Fzg.-Klasse',
@@ -361,7 +361,7 @@ fetches the list of currently waiting userTasks that belong to the processDefini
 
 ```TypeScript
 // definition
-getUserTaskListByProcessDefId(processDefId: string, limit: number = 0, offset: number = 0): Promise<IPagination<IUserTaskEntity>>
+getUserTaskListByProcessDefId(processDefId: string, limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>
 
 // example
 const userTaskList = await consumerClient.getUserTaskListByProcessDefId('f1a8b520-f983-4ba6-8485-f8d7c331df9a')
@@ -370,7 +370,7 @@ const userTaskList = await consumerClient.getUserTaskListByProcessDefId('f1a8b52
 {
   count: 0,
   offset: 0,
-  limit: '100',
+  limit: 100,
   data: []
 }*/
 ```
@@ -381,7 +381,7 @@ fetches the list of available userTasks that belong to the processInstance with 
 
 ```TypeScript
 // definition
-getUserTaskListByProcessInstanceId(processDefId: string, limit: number = 100, offset: number = 0): Promise<IPagination<IUserTaskEntity>>
+getUserTaskListByProcessInstanceId(processDefId: string, limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>
 
 // example
 const userTaskList = await consumerClient.getUserTaskListByProcessInstanceId('645f9869-9b59-4a15-99ee-7a54bbe43aca')

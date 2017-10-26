@@ -125,7 +125,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     this.emit(event, eventData);
   }
 
-  public getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>> {
+  public getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>> {
     return this.processEngineRepository.getProcessDefList(limit, offset);
   }
 
@@ -145,15 +145,15 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     return processInstanceId;
   }
 
-  public getUserTaskList(limit: number, offset: number): Promise<IPagination<IUserTaskEntity>> {
+  public getUserTaskList(limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>> {
     return this.processEngineRepository.getUserTaskList(limit, offset);
   }
 
-  public getUserTaskListByProcessDefId(processDefId: string, limit: number, offset: number): Promise<IPagination<IUserTaskEntity>> {
+  public getUserTaskListByProcessDefId(processDefId: string, limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>> {
     return this.processEngineRepository.getUserTaskListByProcessDefId(processDefId, limit, offset);
   }
 
-  public getUserTaskListByProcessInstanceId(processInstanceId: string, limit: number, offset: number): Promise<IPagination<IUserTaskEntity>> {
+  public getUserTaskListByProcessInstanceId(processInstanceId: string, limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>> {
     return this.processEngineRepository.getUserTaskListByProcessInstanceId(processInstanceId, limit, offset);
   }
 

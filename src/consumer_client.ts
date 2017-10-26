@@ -65,7 +65,7 @@ export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
     return logoutResult.result;
   }
 
-  public getProcessDefList(limit: number = 100, offset: number = 0): Promise<IPagination<IProcessDefEntity>> {
+  public getProcessDefList(limit: number, offset: number): Promise<IPagination<IProcessDefEntity>> {
     return this.processEngineService.getProcessDefList(limit, offset);
   }
 
@@ -77,17 +77,15 @@ export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
     return this.processEngineService.startProcessByKey(processDefKey);
   }
 
-  public getUserTaskList(limit: number = 100, offset: number = 0): Promise<IPagination<IUserTaskEntity>> {
+  public getUserTaskList(limit: number, offset: number): Promise<IPagination<IUserTaskEntity>> {
     return this.processEngineService.getUserTaskList(limit, offset);
   }
 
-  public getUserTaskListByProcessDefId(processDefId: string, limit: number = 100, offset: number = 0): Promise<IPagination<IUserTaskEntity>> {
+  public getUserTaskListByProcessDefId(processDefId: string, limit: number, offset: number): Promise<IPagination<IUserTaskEntity>> {
     return this.processEngineService.getUserTaskListByProcessDefId(processDefId, limit, offset);
   }
 
-  public getUserTaskListByProcessInstanceId(processInstanceId: string,
-                                            limit: number = 100,
-                                            offset: number = 0): Promise<IPagination<IUserTaskEntity>> {
+  public getUserTaskListByProcessInstanceId(processInstanceId: string, limit: number, offset: number): Promise<IPagination<IUserTaskEntity>> {
     return this.processEngineService.getUserTaskListByProcessInstanceId(processInstanceId, limit, offset);
   }
 
