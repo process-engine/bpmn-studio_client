@@ -370,7 +370,7 @@ const userTaskList = await consumerClient.getUserTaskListByProcessDefId('f1a8b52
 {
   count: 0,
   offset: 0,
-  limit: 100,
+  limit: 'ALL',
   data: []
 }*/
 ```
@@ -389,7 +389,7 @@ const userTaskList = await consumerClient.getUserTaskListByProcessInstanceId('64
 /* userTaskList:
 { count: 2,
   offset: 0,
-  limit: '100',
+  limit: 'ALL',
   data: [{
     id: '7bc9457e-7f3a-42b7-9370-2cfc3b91262e',
     name: 'Wähle Fzg.-Klasse',
