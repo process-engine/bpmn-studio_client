@@ -28,7 +28,7 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
 
   private getPaginationSelector(limit?: number, offset?: number): string {
     if (limit === undefined || limit === null) {
-      return 'limit=ALL';
+      return 'limit="ALL"';
     }
 
     return `limit=${limit}&offset=${offset}`;
@@ -99,8 +99,8 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
       value: processDefId,
     };
     const selector: string = this.getPaginationSelector(limit, offset);
-    const parameters: string = `expandCollection=["process.processDef", "nodeDef"]&${selector}`;
-    const url: string = `${this.config.routes.userTaskList}?${parameters}&query=${JSON.stringify(query)}`;
+    const parameters: string = `expandCollection=["process.processDef", "nodeDef"]`;
+    const url: string = `${this.config.routes.userTaskList}?${parameters}&query=${JSON.stringify(query)}&${selector}`;
     const response: Response = await fetch(url, {
       method: 'get',
       headers: this.getFetchHeader(),
