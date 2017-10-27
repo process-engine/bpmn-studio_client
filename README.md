@@ -184,11 +184,6 @@ initialize(tokenRepository?: ITokenRepository): Promise<void>
 await consumerClient.initialize();
 ```
 
-#### About pagination
-
-Any method that returns a `IPagination<T>` object will accept `limit` and `offset` parameters. You can use them to specify how many items you want in
-the resulting list. When `limit` is not given all items will be returned.
-
 #### login
 
 tries to login with the given credentials
@@ -529,3 +524,8 @@ consumerClient.on('*', (messagebusMessage) => {
   // get all the messages for me, even when they are not 'renderUserTask' or 'processEnd'
 });
 ```
+
+### About pagination
+
+Any method that returns a `IPagination<T>` object will accept `limit` and `offset` parameters. You can use them to specify how many items you want in
+the resulting list. When `limit` is not given all items will be returned.
