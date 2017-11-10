@@ -1,5 +1,7 @@
 import * as fetch_ponyfill from 'fetch-ponyfill';
 
+import {Request, RequestInit, Response} from 'node-fetch';
+
 import {
   IDataMessage,
   IMessageBusService,
@@ -14,7 +16,7 @@ import {
 } from '../contracts/index';
 import {HttpHeader, isErrorResult, throwOnErrorResponse} from '../http';
 
-const {fetch, Headers, Request, Response} = fetch_ponyfill();
+const fetch: (url: string | Request, init?: RequestInit) => Promise<Response> = fetch_ponyfill().fetch;
 
 export class ProcessEngineRepository implements IProcessEngineRepository {
 

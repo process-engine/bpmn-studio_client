@@ -7,7 +7,8 @@
   "scripts": {
     "build": "gulp build",
     "prepare": "npm run build",
-    "build-doc": "gulp doc"
+    "build-doc": "gulp doc",
+    "build-schemas": "gulp typescript-schema"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@essential-projects/event_aggregator_contracts": "^0.1.1",
     "@essential-projects/tslint-config": "^0.1.0",
+    "@types/node-fetch": "^1.6.7",
     "gulp": "^3.9.1",
     "gulptraum": "^2.2.1",
     "gulptraum-typescript": "^1.0.0",
@@ -34,7 +36,7 @@
     "@essential-projects/event_aggregator": "^0.1.1",
     "@essential-projects/messagebus_contracts": "^0.1.2",
     "@essential-projects/security_service_contracts": "^0.1.1",
-    "@process-engine/process_engine_contracts": "^0.1.2",
+    "@process-engine/process_engine_contracts": "^0.2.0",
     "addict-ioc": "^2.2.12",
     "eventemitter2": "^4.1.2",
     "faye": "^1.2.4",
