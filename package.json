@@ -22,6 +22,7 @@
   "devDependencies": {
     "@essential-projects/event_aggregator_contracts": "^0.1.1",
     "@essential-projects/tslint-config": "^0.1.0",
+    "@types/node-fetch": "^1.6.7",
     "gulp": "^3.9.1",
     "gulptraum": "^2.2.1",
     "gulptraum-typescript": "^1.0.0",

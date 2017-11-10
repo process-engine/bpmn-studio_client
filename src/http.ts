@@ -1,3 +1,5 @@
+import {Response} from 'node-fetch';
+
 export interface IErrorResponse {
   error: any;
 }
