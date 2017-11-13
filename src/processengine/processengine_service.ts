@@ -131,7 +131,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
 
   public async startProcessById(processDefId: string): Promise<ProcessInstanceId> {
     const participandId: string = this.generateParticipantId();
-    const processInstanceId: string = await this.processEngineRepository.startProcessById(processDefId);
+    const processInstanceId: string = await this.processEngineRepository.startProcessById(processDefId, participandId);
     this.participantIds[processInstanceId] = participandId;
 
     return processInstanceId;
@@ -139,7 +139,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
 
   public async startProcessByKey(processDefKey: string): Promise<ProcessInstanceId> {
     const participandId: string = this.generateParticipantId();
-    const processInstanceId: string = await this.processEngineRepository.startProcessByKey(processDefKey);
+    const processInstanceId: string = await this.processEngineRepository.startProcessByKey(processDefKey, participandId);
     this.participantIds[processInstanceId] = participandId;
 
     return processInstanceId;
