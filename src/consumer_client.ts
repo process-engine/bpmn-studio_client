@@ -1,7 +1,6 @@
+import {SortOrder} from '@essential-projects/core_contracts';
 import {InvocationContainer} from 'addict-ioc';
 import {EventEmitter2} from 'eventemitter2';
-import {registerInContainer} from './ioc_module';
-
 import {
   IAuthenticationService,
   IConsumerClient,
@@ -18,6 +17,7 @@ import {
   UserTaskId,
   UserTaskProceedAction,
 } from './contracts/index';
+import {registerInContainer} from './ioc_module';
 
 export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
   private container: InvocationContainer;
@@ -65,8 +65,9 @@ export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
     return logoutResult.result;
   }
 
-  public getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>> {
-    return this.processEngineService.getProcessDefList(limit, offset);
+  public getProcessDefList(limit?: number, offset?: number,
+                           sortAttribute?: string, sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>> {
+    return this.processEngineService.getProcessDefList(limit, offset, sortAttribute, sortingOrder);
   }
 
   public startProcessById(processDefId: string): Promise<ProcessInstanceId> {
