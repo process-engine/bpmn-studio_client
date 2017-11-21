@@ -1,8 +1,9 @@
-import {SortOrder} from '@essential-projects/core_contracts';
+import {IPublicQueryOptions, ISortOptions, SortOrder} from '@essential-projects/core_contracts';
 import {IUserTaskEntity, IUserTaskMessageData} from '@process-engine/process_engine_contracts';
 import {EventEmitter2} from 'eventemitter2';
 export {IQueryClause} from '@essential-projects/core_contracts';
 export {IProcessDefEntity, IUserTaskEntity, IUserTaskMessageData} from '@process-engine/process_engine_contracts';
+export {IPublicQueryOptions, ISortOptions, SortOrder} from '@essential-projects/core_contracts';
 
 import {IPagination, IProcessDefEntity} from './index';
 

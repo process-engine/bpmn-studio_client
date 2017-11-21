@@ -1,4 +1,3 @@
-import {SortOrder} from '@essential-projects/core_contracts';
 import {EventEmitter2} from 'eventemitter2';
 import {v4} from 'uuid-browser';
 import {
@@ -29,6 +28,7 @@ import {
   MessageAction,
   MessageEventType,
   ProcessInstanceId,
+  SortOrder,
   SpecificFormWidgetField,
   UiConfigLayoutElement,
   UserTaskId,
@@ -126,8 +126,10 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     this.emit(event, eventData);
   }
 
-  public getProcessDefList(limit?: number, offset?: number,
-                           sortAttribute?: string, sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>> {
+  public getProcessDefList(limit?: number,
+                           offset?: number,
+                           sortAttribute?: string,
+                           sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>> {
     return this.processEngineRepository.getProcessDefList(limit, offset);
   }
 

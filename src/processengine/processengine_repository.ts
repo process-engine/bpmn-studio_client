@@ -2,18 +2,20 @@ import * as fetch_ponyfill from 'fetch-ponyfill';
 
 import {Request, RequestInit, Response} from 'node-fetch';
 
-import {IPublicQueryOptions, ISortOptions, SortOrder} from '@essential-projects/core_contracts';
 import {
   IDataMessage,
   IMessageBusService,
   IPagination,
   IProcessDefEntity,
   IProcessEngineRepository,
+  IPublicQueryOptions,
   IQueryClause,
+  ISortOptions,
   ITokenRepository,
   IUserTaskEntity,
   IUserTaskMessageData,
   ProcessInstanceId,
+  SortOrder,
 } from '../contracts/index';
 import {HttpHeader, isErrorResult, throwOnErrorResponse} from '../http';
 
@@ -37,20 +39,7 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
     return `limit=${limit}&offset=${offset}`;
   }
 
-  private getOrderByQuery(sortAttribute: string, sortingOrder: SortOrder): ISortOptions {
-    if (sortAttribute === undefined || sortAttribute === null) {
-      const standardQuery: ISortOptions = {
-        attributes: [
-          {
-            attribute: 'name',
-            order: 'asc',
-          },
-        ],
-      };
-
-      return standardQuery;
-    }
-
+  private getOrderByQuery(sortAttribute: string = 'name', sortingOrder: SortOrder = 'asc'): ISortOptions {
     const query: ISortOptions = {
       attributes: [
         {
@@ -63,8 +52,10 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
     return query;
   }
 
-  public async getProcessDefList(limit?: number, offset?: number,
-                                 sortAttribute?: string, sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>> {
+  public async getProcessDefList(limit?: number,
+                                 offset?: number,
+                                 sortAttribute?: string,
+                                 sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>> {
     const selector: string = this.getPaginationSelector(limit, offset);
     const orderByQuery: ISortOptions = this.getOrderByQuery(sortAttribute, sortingOrder);
     const url: string = `${this.config.routes.processes}?${selector}&orderBy=${JSON.stringify(orderByQuery)}`;
