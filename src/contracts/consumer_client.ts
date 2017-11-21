@@ -1,3 +1,4 @@
+import {SortOrder} from '@essential-projects/core_contracts';
 import {ILoginResult,
   IPagination,
   IProcessDefEntity,
@@ -13,7 +14,7 @@ export interface IConsumerClient {
   initialize(tokenRepository?: ITokenRepository): Promise<void>;
   login(username: string, password: string): Promise<ILoginResult>;
   logout(): Promise<boolean>;
-  getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>;
+  getProcessDefList(limit?: number, offset?: number, sortAttribute?: string, sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>>;
   startProcessById(processDefId: string): Promise<ProcessInstanceId>;
   startProcessByKey(processDefKey: string): Promise<ProcessInstanceId>;
   getUserTaskList(limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>;
