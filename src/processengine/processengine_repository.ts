@@ -8,11 +8,14 @@ import {
   IPagination,
   IProcessDefEntity,
   IProcessEngineRepository,
+  IPublicQueryOptions,
   IQueryClause,
+  ISortOptions,
   ITokenRepository,
   IUserTaskEntity,
   IUserTaskMessageData,
   ProcessInstanceId,
+  SortOrder,
 } from '../contracts/index';
 import {HttpHeader, isErrorResult, throwOnErrorResponse} from '../http';
 
@@ -36,9 +39,27 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
     return `limit=${limit}&offset=${offset}`;
   }
 
-  public async getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>> {
+  private getOrderByQuery(sortAttribute: string = 'name', sortingOrder: SortOrder = 'asc'): ISortOptions {
+    const query: ISortOptions = {
+      attributes: [
+        {
+          attribute: sortAttribute,
+          order: sortingOrder,
+        },
+      ],
+    };
+
+    return query;
+  }
+
+  public async getProcessDefList(limit?: number,
+                                 offset?: number,
+                                 sortAttribute?: string,
+                                 sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>> {
     const selector: string = this.getPaginationSelector(limit, offset);
-    const url: string = `${this.config.routes.processes}?${selector}`;
+    const orderByQuery: ISortOptions = this.getOrderByQuery(sortAttribute, sortingOrder);
+    const url: string = `${this.config.routes.processes}?${selector}&orderBy=${JSON.stringify(orderByQuery)}`;
+
     const response: Response = await fetch(url, {
       method: 'get',
       headers: this.getFetchHeader(),

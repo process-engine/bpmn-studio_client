@@ -1,7 +1,9 @@
+import {IPublicQueryOptions, ISortOptions, SortOrder} from '@essential-projects/core_contracts';
 import {IUserTaskEntity, IUserTaskMessageData} from '@process-engine/process_engine_contracts';
 import {EventEmitter2} from 'eventemitter2';
 export {IQueryClause} from '@essential-projects/core_contracts';
 export {IProcessDefEntity, IUserTaskEntity, IUserTaskMessageData} from '@process-engine/process_engine_contracts';
+export {IPublicQueryOptions, ISortOptions, SortOrder} from '@essential-projects/core_contracts';
 
 import {IPagination, IProcessDefEntity} from './index';
 
@@ -10,7 +12,7 @@ export type ProcessInstanceId = string;
 export type UserTaskId = string;
 
 export interface IProcessEngineService extends EventEmitter2 {
-  getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>;
+  getProcessDefList(limit?: number, offset?: number, sortAttribute?: string, sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>>;
   startProcessById(processDefId: string): Promise<ProcessInstanceId>;
   startProcessByKey(processDefKey: string): Promise<ProcessInstanceId>;
   getUserTaskList(limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>;
@@ -22,7 +24,7 @@ export interface IProcessEngineService extends EventEmitter2 {
 }
 
 export interface IProcessEngineRepository {
-  getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>;
+  getProcessDefList(limit?: number, offset?: number, sortAttribute?: string, sortingOrder?: SortOrder): Promise<IPagination<IProcessDefEntity>>;
   startProcessById(processDefId: string, participantId?: string): Promise<ProcessInstanceId>;
   startProcessByKey(processDefKey: string, participantId?: string): Promise<ProcessInstanceId>;
   getUserTaskList(limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>;
