@@ -134,17 +134,17 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
   }
 
   public async startProcessById(processDefId: string): Promise<ProcessInstanceId> {
-    const participandId: string = this.generateParticipantId();
-    const processInstanceId: string = await this.processEngineRepository.startProcessById(processDefId);
-    this.participantIds[processInstanceId] = participandId;
+    const participantId: string = this.generateParticipantId();
+    const processInstanceId: string = await this.processEngineRepository.startProcessById(processDefId, participantId);
+    this.participantIds[processInstanceId] = participantId;
 
     return processInstanceId;
   }
 
   public async startProcessByKey(processDefKey: string): Promise<ProcessInstanceId> {
-    const participandId: string = this.generateParticipantId();
-    const processInstanceId: string = await this.processEngineRepository.startProcessByKey(processDefKey);
-    this.participantIds[processInstanceId] = participandId;
+    const participantId: string = this.generateParticipantId();
+    const processInstanceId: string = await this.processEngineRepository.startProcessByKey(processDefKey, participantId);
+    this.participantIds[processInstanceId] = participantId;
 
     return processInstanceId;
   }
@@ -195,8 +195,8 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
       token: userTaskResult,
     };
 
-    const participandId: string = this.getParticipantId(finishedTask.userTaskEntity.process.id);
-    const proceedMessage: IDataMessage = this.messageBusService.createDataMessage(messageData, participandId);
+    const participantId: string = this.getParticipantId(finishedTask.userTaskEntity.process.id);
+    const proceedMessage: IDataMessage = this.messageBusService.createDataMessage(messageData, participantId);
 
     return this.messageBusService.sendMessage(`/processengine/node/${finishedTask.id}`, proceedMessage);
   }
@@ -207,8 +207,8 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
       eventType: MessageEventType.cancel,
     };
 
-    const participandId: string = this.getParticipantId(userTaskToCancel.userTaskEntity.process.id);
-    const cancelMessage: IDataMessage = this.messageBusService.createDataMessage(messageData, participandId);
+    const participantId: string = this.getParticipantId(userTaskToCancel.userTaskEntity.process.id);
+    const cancelMessage: IDataMessage = this.messageBusService.createDataMessage(messageData, participantId);
 
     return this.messageBusService.sendMessage(`/processengine/node/${userTaskToCancel.id}`, cancelMessage);
   }
