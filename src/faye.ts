@@ -35,12 +35,28 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
       },
     });
 
-    this.setupFaye();
+    this.fayeClient = new Faye.Client(this.config.routes.messageBus);
+    const oldSubscriptions: {[channel: string]: Array<SubscriptionObject>} = Object.assign({}, this.subscriptions);
+    this.subscriptions = {};
+    for (const channel in oldSubscriptions) {
+        if (this.subscriptions[channel] === undefined) {
+            this.subscriptions[channel] = [];
+        }
+
+        for (const subscription of oldSubscriptions[channel]) {
+            if (subscription.subscription !== null) {
+              subscription.subscription.cancel();
+            }
+            const newSubscription: SubscriptionObject = this.fayeClient.subscribe(channel).withChannel(subscription.callback);
+            this.subscriptions[channel].push({
+                subscription: subscription,
+                callback: subscription.callback,
+            });
+        }
+    }
   }
 
-  private setupFaye(): void {
-    this.fayeClient = new Faye.Client(this.config.routes.messageBus);
-
+  private initialize(): void {
     this.on('newListener', (channel: string, callback: Function) => {
       if (channel === 'newListener' || channel === 'removeListener') {
         return;
@@ -50,11 +66,16 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
         this.subscriptions[channel] = [];
       }
 
-      const subscription: any = this.fayeClient.subscribe(channel).withChannel(callback);
       this.subscriptions[channel].push({
-        subscription: subscription,
+        subscription: null,
         callback: callback,
       });
+
+      if (this.fayeClient) {
+        const subscriptionObject: SubscriptionObject = this.subscriptions[channel][this.subscriptions[channel].length - 1];
+        subscriptionObject.subscription = this.fayeClient.subscribe(channel).withChannel(callback);
+      }
+
     });
 
     this.on('removeListener', (channel: string, callback: Function) => {
