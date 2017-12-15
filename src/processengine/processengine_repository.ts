@@ -31,6 +31,17 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
     this.tokenRepository = tokenRepository;
   }
 
+  public updateConfig(config: any): void {
+    Object.assign(this.config, {
+      routes: {
+        userTaskData: `${config.baseRoute}/processengine/user_task_data`,
+        userTaskList: `${config.baseRoute}/datastore/UserTask`,
+        startProcess: `${config.baseRoute}/processengine/start`,
+        processes: `${config.baseRoute}/datastore/ProcessDef`,
+      },
+    });
+  }
+
   private getPaginationSelector(limit?: number, offset?: number): string {
     if (limit === undefined || limit === null) {
       return 'limit="ALL"';

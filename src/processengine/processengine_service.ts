@@ -65,6 +65,11 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
     });
   }
 
+  public updateConfig(config: any): void {
+    this.processEngineRepository.updateConfig(config);
+    this.messageBusService.updateConfig(config);
+  }
+
   private updateIdentity(newIdentity?: IIdentity): void {
     let oldRoles: Array<string> = ['guest'];
     const oldIdentity: IIdentity = this.tokenRepository.getIdentity();

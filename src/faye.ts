@@ -24,6 +24,14 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
     this.tokenRepository = tokenRepository;
   }
 
+  public updateConfig(config: any): void {
+    Object.assign(this.config, {
+      routes: {
+        messageBus: `${config.baseRoute}/mb`,
+      },
+    });
+  }
+
   public initialize(): void {
     this.fayeClient = new Faye.Client(this.config.routes.messageBus);
 

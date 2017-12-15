@@ -8,6 +8,7 @@ export interface IMessageBusService extends EventEmitter2 {
   createDataMessage(data: any, participantId?: string): IDataMessage;
   sendMessage(channel: string, message: any): Promise<any>;
   messageIsDataMessage(message: any): message is IDataMessage;
+  updateConfig(config: any): void;
 }
 
 export enum MessageAction {

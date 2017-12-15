@@ -17,6 +17,14 @@ export class AuthenticationRepository implements IAuthenticationRepository {
     this.tokenRepository = tokenRepository;
   }
 
+  public updateConfig(config: any): void {
+    Object.assign(this.config, {
+      routes: {
+        iam: `${config.baseRoute}/iam`,
+      },
+    });
+  }
+
   public async login(username: string, password: string): Promise<ILoginResult> {
     const options: RequestInit = {
       method: 'post',

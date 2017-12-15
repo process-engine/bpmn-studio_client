@@ -19,6 +19,10 @@ export class AuthenticationService implements IAuthenticationService {
     this.tokenRepository = tokenRepository;
   }
 
+  public updateConfig(config: any): void {
+    this.authenticationRepository.updateConfig(config);
+  }
+
   public async login(username: string, password: string): Promise<ILoginResult> {
     const result: ILoginResult = await this.authenticationRepository.login(username, password);
     this.tokenRepository.setToken(result.token);
