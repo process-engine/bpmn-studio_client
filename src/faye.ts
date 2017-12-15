@@ -14,7 +14,7 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
   private fayeClient: any;
   private subscriptions: {[channel: string]: Array<SubscriptionObject>} = {};
 
-  public config: any = null;
+  public config: any = {};
 
   constructor(tokenRepository: ITokenRepository) {
     super({
@@ -30,9 +30,12 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
         messageBus: `${config.baseRoute}/mb`,
       },
     });
+
+    this.setupFaye();
   }
 
-  public initialize(): void {
+  private setupFaye(): void {
+    console.log(this.config, this.config.routes.messageBus);
     this.fayeClient = new Faye.Client(this.config.routes.messageBus);
 
     this.on('newListener', (channel: string, callback: Function) => {

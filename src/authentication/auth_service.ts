@@ -12,7 +12,7 @@ export class AuthenticationService implements IAuthenticationService {
 
   private authenticationRepository: IAuthenticationRepository;
   private tokenRepository: ITokenRepository;
-  public config: any = null;
+  public config: any = {};
 
   constructor(authenticationRepository: IAuthenticationRepository, tokenRepository: ITokenRepository) {
     this.authenticationRepository = authenticationRepository;

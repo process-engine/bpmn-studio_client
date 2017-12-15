@@ -23,7 +23,7 @@ const fetch: (url: string | Request, init?: RequestInit) => Promise<Response> = 
 
 export class ProcessEngineRepository implements IProcessEngineRepository {
 
-  public config: any = null;
+  public config: any = {};
   private tokenRepository: ITokenRepository;
   private messageBusService: IMessageBusService;
 
