@@ -25,6 +25,10 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
   }
 
   public updateConfig(config: any): void {
+    if (this.fayeClient !== undefined && this.fayeClient !== null) {
+      this.fayeClient.disconnect();
+    }
+
     Object.assign(this.config, {
       routes: {
         messageBus: `${config.baseRoute}/mb`,
@@ -35,7 +39,6 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
   }
 
   private setupFaye(): void {
-    console.log(this.config, this.config.routes.messageBus);
     this.fayeClient = new Faye.Client(this.config.routes.messageBus);
 
     this.on('newListener', (channel: string, callback: Function) => {
