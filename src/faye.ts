@@ -4,7 +4,7 @@ import {v4} from 'uuid-browser';
 import {IAuthenticationService, IDataMessage, IMessage, IMessageBusService, ITokenRepository, MessageAction} from './contracts/index';
 
 interface SubscriptionObject {
-  subscription: any;
+  fayeSubscription: any;
   callback: Function;
 }
 
@@ -36,24 +36,7 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
     });
 
     this.fayeClient = new Faye.Client(this.config.routes.messageBus);
-    const oldSubscriptions: {[channel: string]: Array<SubscriptionObject>} = Object.assign({}, this.subscriptions);
-    this.subscriptions = {};
-    for (const channel in oldSubscriptions) {
-        if (this.subscriptions[channel] === undefined) {
-            this.subscriptions[channel] = [];
-        }
-
-        for (const subscription of oldSubscriptions[channel]) {
-            if (subscription.subscription !== null) {
-              subscription.subscription.cancel();
-            }
-            const newSubscription: SubscriptionObject = this.fayeClient.subscribe(channel).withChannel(subscription.callback);
-            this.subscriptions[channel].push({
-              subscription: newSubscription,
-              callback: subscription.callback,
-            });
-        }
-    }
+    this.moveOldSubscriptionsToNewFayeClient();
   }
 
   private initialize(): void {
@@ -67,13 +50,13 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
       }
 
       this.subscriptions[channel].push({
-        subscription: null,
+        fayeSubscription: null,
         callback: callback,
       });
 
-      if (this.fayeClient) {
+      if (this.fayeClient !== undefined && this.fayeClient !== null) {
         const subscriptionObject: SubscriptionObject = this.subscriptions[channel][this.subscriptions[channel].length - 1];
-        subscriptionObject.subscription = this.fayeClient.subscribe(channel).withChannel(callback);
+        subscriptionObject.fayeSubscription = this.fayeClient.subscribe(channel).withChannel(callback);
       }
 
     });
@@ -97,9 +80,32 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
         return;
       }
 
-      this.subscriptions[channel][subscriptionIndex].subscription.cancel();
+      this.subscriptions[channel][subscriptionIndex].fayeSubscription.cancel();
       delete this.subscriptions[channel][subscriptionIndex];
     });
+  }
+
+  private moveOldSubscriptionsToNewFayeClient(): void {
+    const oldSubscriptions: {[channel: string]: Array<SubscriptionObject>} = Object.assign({}, this.subscriptions);
+    this.subscriptions = {};
+
+    for (const channel in oldSubscriptions) {
+      if (this.subscriptions[channel] === undefined) {
+          this.subscriptions[channel] = [];
+      }
+
+      for (const subscription of oldSubscriptions[channel]) {
+        if (subscription.fayeSubscription !== null) {
+          subscription.fayeSubscription.cancel();
+        }
+
+        const newSubscription: SubscriptionObject = this.fayeClient.subscribe(channel).withChannel(subscription.callback);
+        this.subscriptions[channel].push({
+          fayeSubscription: newSubscription,
+          callback: subscription.callback,
+        });
+      }
+    }
   }
 
   public createDataMessage(data: any, participantId?: string): IDataMessage {
