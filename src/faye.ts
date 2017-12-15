@@ -49,8 +49,8 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
             }
             const newSubscription: SubscriptionObject = this.fayeClient.subscribe(channel).withChannel(subscription.callback);
             this.subscriptions[channel].push({
-                subscription: subscription,
-                callback: subscription.callback,
+              subscription: newSubscription,
+              callback: subscription.callback,
             });
         }
     }
