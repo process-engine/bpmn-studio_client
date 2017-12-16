@@ -23,4 +23,5 @@ export interface IConsumerClient {
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
   cancelUserTask(userTaskToCancel: IUserTaskConfig): Promise<void>;
+  updateConfig(config: any): void;
 }

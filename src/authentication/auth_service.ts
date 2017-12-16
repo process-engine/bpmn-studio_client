@@ -12,11 +12,15 @@ export class AuthenticationService implements IAuthenticationService {
 
   private authenticationRepository: IAuthenticationRepository;
   private tokenRepository: ITokenRepository;
-  public config: any = null;
+  public config: any = {};
 
   constructor(authenticationRepository: IAuthenticationRepository, tokenRepository: ITokenRepository) {
     this.authenticationRepository = authenticationRepository;
     this.tokenRepository = tokenRepository;
+  }
+
+  public updateConfig(config: any): void {
+    this.authenticationRepository.updateConfig(config);
   }
 
   public async login(username: string, password: string): Promise<ILoginResult> {

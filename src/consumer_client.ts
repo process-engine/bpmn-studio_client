@@ -53,6 +53,14 @@ export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
     this.processEngineService.on('*', function(...parameter: Array<any>): void {
       eventHandler(this.event, ...parameter);
     });
+
+    this.updateConfig(this.config);
+  }
+
+  public updateConfig(config: any): void {
+    Object.assign(this.config, config);
+    this.authService.updateConfig(this.config);
+    this.processEngineService.updateConfig(this.config);
   }
 
   public login(username: string, password: string): Promise<ILoginResult> {

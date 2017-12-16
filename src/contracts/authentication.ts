@@ -1,11 +1,13 @@
 export interface IAuthenticationService {
   login(username: string, password: string): Promise<ILoginResult>;
   logout(): Promise<ILogoutResult>;
+  updateConfig(config: any): void;
 }
 
 export interface IAuthenticationRepository {
   login(username: string, password: string): Promise<ILoginResult>;
   logout(): Promise<ILogoutResult>;
+  updateConfig(config: any): void;
 }
 
 export interface ILoginResult {

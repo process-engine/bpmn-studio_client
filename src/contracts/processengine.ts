@@ -21,6 +21,7 @@ export interface IProcessEngineService extends EventEmitter2 {
   getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>;
   proceedUserTask(finishedTask: IUserTaskConfig, proceedAction?: UserTaskProceedAction): Promise<void>;
   cancelUserTask(userTaskToCancel: IUserTaskConfig): Promise<void>;
+  updateConfig(config: any): void;
 }
 
 export interface IProcessEngineRepository {
@@ -31,6 +32,7 @@ export interface IProcessEngineRepository {
   getUserTaskListByProcessDefId(processDefId: string, limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskListByProcessInstanceId(processInstanceId: string, limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>;
   getUserTaskData(userTaskId: string): Promise<IUserTaskMessageData>;
+  updateConfig(config: any): void;
 }
 
 // General widget-types

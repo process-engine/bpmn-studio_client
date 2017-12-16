@@ -10,11 +10,19 @@ const HTTP_CODE_OK: number = 200;
 
 export class AuthenticationRepository implements IAuthenticationRepository {
 
-  public config: any = null;
+  public config: any = {};
   private tokenRepository: ITokenRepository;
 
   constructor(tokenRepository: ITokenRepository) {
     this.tokenRepository = tokenRepository;
+  }
+
+  public updateConfig(config: any): void {
+    Object.assign(this.config, {
+      routes: {
+        iam: `${config.baseRoute}/iam`,
+      },
+    });
   }
 
   public async login(username: string, password: string): Promise<ILoginResult> {

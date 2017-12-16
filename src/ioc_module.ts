@@ -20,37 +20,19 @@ export function registerInContainer(container: InvocationContainer,
   tokenRepositoryRegistration.isTrueSingleton();
 
   container.register('AuthenticationRepository', AuthenticationRepository)
-    .dependencies('TokenRepository')
-    .configure({
-      routes: {
-        iam: `${baseRoute}/iam`,
-      },
-    });
+    .dependencies('TokenRepository');
 
   container.register('AuthenticationService', AuthenticationService)
     .dependencies('AuthenticationRepository', 'TokenRepository')
     .isTrueSingleton();
 
   container.register('ProcessEngineRepository', ProcessEngineRepository)
-    .dependencies('TokenRepository')
-    .configure({
-      routes: {
-        userTaskData: `${baseRoute}/processengine/user_task_data`,
-        userTaskList: `${baseRoute}/datastore/UserTask`,
-        startProcess: `${baseRoute}/processengine/start`,
-        processes: `${baseRoute}/datastore/ProcessDef`,
-      },
-    });
+    .dependencies('TokenRepository');
 
   container.register('ProcessEngineService', ProcessEngineService)
     .dependencies('ProcessEngineRepository', 'MessagebusService', 'TokenRepository')
     .isTrueSingleton();
 
   container.register('MessagebusService', MessageBusService)
-    .dependencies('TokenRepository')
-    .configure({
-      routes: {
-        messageBus: `${baseRoute}/mb`,
-      },
-    });
+    .dependencies('TokenRepository');
 }
