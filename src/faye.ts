@@ -99,7 +99,6 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
           subscription.fayeSubscription.cancel();
         }
 
-        console.log(`mapping ${subscription.callback.toString()}`);
         const newSubscription: SubscriptionObject = this.fayeClient.subscribe(channel).withChannel(subscription.callback);
         this.subscriptions[channel].push({
           fayeSubscription: newSubscription,
