@@ -81,7 +81,7 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
       }
 
       this.subscriptions[channel][subscriptionIndex].fayeSubscription.cancel();
-      delete this.subscriptions[channel][subscriptionIndex];
+      this.subscriptions[channel].splice(subscriptionIndex, 1);
     });
   }
 
@@ -99,6 +99,7 @@ export class MessageBusService extends EventEmitter2 implements IMessageBusServi
           subscription.fayeSubscription.cancel();
         }
 
+        console.log(`mapping ${subscription.callback.toString()}`);
         const newSubscription: SubscriptionObject = this.fayeClient.subscribe(channel).withChannel(subscription.callback);
         this.subscriptions[channel].push({
           fayeSubscription: newSubscription,
