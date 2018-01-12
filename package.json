@@ -38,7 +38,7 @@
     "@essential-projects/event_aggregator": "1.0.0-rc3",
     "@essential-projects/messagebus_contracts": "1.0.0-rc3",
     "@essential-projects/security_service_contracts": "1.0.0-rc3",
-    "@process-engine/process_engine_contracts": "1.0.0-rc3",
+    "@process-engine/process_engine_contracts": "1.0.0-rc5",
     "addict-ioc": "^2.2.12",
     "eventemitter2": "^4.1.2",
     "faye": "^1.2.4",
