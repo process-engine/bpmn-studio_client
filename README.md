@@ -65,7 +65,7 @@ run();
 <details>
   <summary>Aurelia</summary>
 
-In aurelia, you should create a new consumerClient-feature, so you can inject the client where you need it (this is how it's used in [charon](https://github.com/process-engine/charon)):
+In aurelia, you should create a new consumerClient-feature, so you can inject the client where you need it (this is how it's used in [bpmn-studio](https://github.com/process-engine/bpmn-studio)):
 
 *aurelia.json* (make aurelia knows about the package)
 
@@ -154,7 +154,7 @@ export class ClassName {
 
 ### Related projects
 
-- [Charon](https://github.com/process-engine/charon)
+- [Charon](https://github.com/process-engine/bpmn-studio)
 
 ## ConsumerClient-API
 
