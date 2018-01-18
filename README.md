@@ -154,7 +154,7 @@ export class ClassName {
 
 ### Related projects
 
-- [Charon](https://github.com/process-engine/bpmn-studio)
+- [BPMN-Studio](https://github.com/process-engine/bpmn-studio)
 
 ## ConsumerClient-API
 
