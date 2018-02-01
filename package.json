@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/consumer_client",
-  "version": "1.0.0-rc6",
+  "version": "1.0.0-rc7",
   "description": "a client to interact with the process-engine",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
