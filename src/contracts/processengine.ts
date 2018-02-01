@@ -48,6 +48,7 @@ export enum FormWidgetFieldType {
   string = 'string',
   boolean = 'boolean',
   enumeration = 'enum',
+  long = 'long',
 }
 
 export interface IFormWidgetField<TValue> {
