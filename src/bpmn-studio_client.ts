@@ -2,7 +2,7 @@ import {InvocationContainer} from 'addict-ioc';
 import {EventEmitter2} from 'eventemitter2';
 import {
   IAuthenticationService,
-  IConsumerClient,
+  IBpmnStudioClient,
   ILoginResult,
   ILogoutResult,
   IMessage,
@@ -19,7 +19,7 @@ import {
 } from './contracts/index';
 import {registerInContainer} from './ioc_module';
 
-export class ConsumerClient extends EventEmitter2 implements IConsumerClient {
+export class BpmnStudioClient extends EventEmitter2 implements IBpmnStudioClient {
   private container: InvocationContainer;
   private authService: IAuthenticationService;
   private processEngineService: IProcessEngineService;

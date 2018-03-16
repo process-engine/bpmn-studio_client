@@ -1,6 +1,6 @@
-# consumer_client
+# BPMN-Studio Client
 
-The consumer_client is a JavaScript-client to communicate with a process-engine-instance
+The bpmn-studio_client is a JavaScript-client to communicate with a process-engine-instance
 
 ## What are the goals of this project?
 
@@ -16,14 +16,14 @@ A javascript or typescript environment
 
 Install the package:
 ```
-npm install --save @process-engine/consumer_client
+npm install --save @process-engine/bpmn-studio_client
 ```
 
 ## How do I use this project?
 
 ### Usage
 
-To use this package, import the `ConsumerClient`-class, create a new instance and initialize it. After that,
+To use this package, import the `BpmnStudioClient`-class, create a new instance and initialize it. After that,
 you can start using its methods.
 
 Before initializing it, you can set its `config` as described in the API-doc
@@ -34,7 +34,7 @@ Some examples:
   <summary>simple JavaScript (Node)</summary>
 
 ```JavaScript
-const client = require('@process-engine/consumer_client').ConsumerClient;
+const client = require('@process-engine/bpmn-studio_client').BpmnStudioClient;
 
 const clientInstance = new client();
 
@@ -49,9 +49,9 @@ client.initialize()
   <summary>TypeScript</summary>
 
 ```TypeScript
-import {ConsumerClient} from '@process-engine/consumer_client';
+import {BpmnStudioClient} from '@process-engine/bpmn-studio_client';
 
-const clientInstance = new ConsumerClient();
+const clientInstance = new BpmnStudioClient();
 
 async function run() {
   await clientInstance.initialize()
@@ -65,7 +65,7 @@ run();
 <details>
   <summary>Aurelia</summary>
 
-In aurelia, you should create a new consumerClient-feature, so you can inject the client where you need it (this is how it's used in [bpmn-studio](https://github.com/process-engine/bpmn-studio)):
+In aurelia, you should create a new bpmnStudioClient-feature, so you can inject the client where you need it (this is how it's used in [bpmn-studio](https://github.com/process-engine/bpmn-studio)):
 
 *aurelia.json* (make aurelia knows about the package)
 
@@ -75,8 +75,8 @@ In aurelia, you should create a new consumerClient-feature, so you can inject th
   "dependencies": [
     ...
     {
-      "name": "@process-engine/consumer_client",
-      "path": "../node_modules/@process-engine/consumer_client/dist/amd",
+      "name": "@process-engine/bpmn-studio_client",
+      "path": "../node_modules/@process-engine/bpmn-studio_client/dist/amd",
       "main": "index.js"
     },
     {
@@ -104,18 +104,18 @@ In aurelia, you should create a new consumerClient-feature, so you can inject th
 }
 ```
 
-*consumer-client/index.ts* (register the client to aurelias dependency injection container)
+*bpmn-studio_client/index.ts* (register the client to aurelias dependency injection container)
 
 ```TypeScript
-import {ConsumerClient} from '@process-engine/consumer_client';
+import {BpmnStudioClient} from '@process-engine/bpmn-studio_client';
 import {FrameworkConfiguration} from 'aurelia-framework';
 
 export async function configure(config: FrameworkConfiguration): Promise<void> {
 
-  const consumerClient: ConsumerClient = new ConsumerClient();
-  await consumerClient.initialize();
+  const bpmnStudioClient: BpmnStudioClient = new BpmnStudioClient();
+  await bpmnStudioClient.initialize();
 
-  config.container.registerInstance('ConsumerClient', consumerClient);
+  config.container.registerInstance('BpmnStudioClient', bpmnStudioClient);
 }
 ```
 
@@ -124,22 +124,22 @@ export async function configure(config: FrameworkConfiguration): Promise<void> {
 ```TypeScript
 aurelia.use
   .standardConfiguration()
-  .feature('consumer-client');
+  .feature('bpmn-studio_client');
 ```
 
 *some class* (inject the client where you need it)
 
 ```TypeScript
-import {ConsumerClient} from '@process-engine/consumer_client';
+import {BpmnStudioClient} from '@process-engine/bpmn-studio_client';
 import {inject} from 'aurelia-framework';
 
-@inject('ConsumerClient')
+@inject('BpmnStudioClient')
 export class ClassName {
 
-  private consumerClient: ConsumerClient;
+  private bpmnStudioClient: BpmnStudioClient;
 
-  constructor(consumerClient: ConsumerClient) {
-    this.consumerClient = consumerClient;
+  constructor(bpmnStudioClient: BpmnStudioClient) {
+    this.bpmnStudioClient = bpmnStudioClient;
     // do something with the client
   }
 }
@@ -156,7 +156,7 @@ export class ClassName {
 
 - [BPMN-Studio](https://github.com/process-engine/bpmn-studio)
 
-## ConsumerClient-API
+## BpmnStudioClient-API
 
 ### Configuration
 
@@ -172,7 +172,7 @@ At the moment, there is not much you can configure, only the base-route of the p
 
 #### initialize
 
-Initializes the ConsumerClient, and establishes a messagebus-connection to the process-engine.
+Initializes the BpmnStudioClient, and establishes a messagebus-connection to the process-engine.
 
 See [here](./src/authentication/token_repository.ts) for an example of a minimal token-repository. If none provided, this is the one that will be used
 
@@ -181,7 +181,7 @@ See [here](./src/authentication/token_repository.ts) for an example of a minimal
 initialize(tokenRepository?: ITokenRepository): Promise<void>
 
 // example
-await consumerClient.initialize();
+await bpmnStudioClient.initialize();
 ```
 
 #### login
@@ -193,7 +193,7 @@ tries to login with the given credentials
 login(username: string, password: string): Promise<ILoginResult>
 
 // example
-const loginResult = await consumerClient.login('admin', 'admin');
+const loginResult = await bpmnStudioClient.login('admin', 'admin');
 
 /* loginResult:
 {
@@ -215,7 +215,7 @@ logs out the current user
 logout(): Promise<boolean>
 
 // example
-consumerClient.logout();
+bpmnStudioClient.logout();
 ```
 
 #### getProcessDefList
@@ -227,7 +227,7 @@ fetches a list of processDefinitions. These can be used to start a new process. 
 getProcessDefList(limit?: number, offset?: number): Promise<IPagination<IProcessDefEntity>>
 
 // example
-const list = await consumerClient.getProcessDefList();
+const list = await bpmnStudioClient.getProcessDefList();
 
 /* list:
 { count: 2,
@@ -278,7 +278,7 @@ Starts a new Instance of the process with the given Id
 startProcessById(processDefId: string): Promise<ProcessInstanceId>
 
 //example
-const processInstanceId = await consumerClient.startProcessById('5c64bfbc-45c1-4dd8-a69d-325e8610d6bd');
+const processInstanceId = await bpmnStudioClient.startProcessById('5c64bfbc-45c1-4dd8-a69d-325e8610d6bd');
 
 // processInstanceId: '6b1c43ae-bcc6-4ec5-adf1-3350916feaf7
 ```
@@ -292,7 +292,7 @@ Starts a new Instance of the process with the given key
 startProcessById(processDefKey: string): Promise<ProcessInstanceId>
 
 //example
-const processInstanceId = await consumerClient.startProcessByKey('CreateProcessDef');
+const processInstanceId = await bpmnStudioClient.startProcessByKey('CreateProcessDef');
 
 // processInstanceId: '6b1c43ae-bcc6-4ec5-adf1-3350916feaf7
 ```
@@ -306,7 +306,7 @@ fetches the list of available userTasks. See [here](#about-pagination) for detai
 getUserTaskList(limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>
 
 // example
-const userTaskList = await consumerClient.getUserTaskList()
+const userTaskList = await bpmnStudioClient.getUserTaskList()
 
 /* userTaskList:
 { count: 3,
@@ -359,7 +359,7 @@ fetches the list of currently waiting userTasks that belong to the processDefini
 getUserTaskListByProcessDefId(processDefId: string, limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>
 
 // example
-const userTaskList = await consumerClient.getUserTaskListByProcessDefId('f1a8b520-f983-4ba6-8485-f8d7c331df9a')
+const userTaskList = await bpmnStudioClient.getUserTaskListByProcessDefId('f1a8b520-f983-4ba6-8485-f8d7c331df9a')
 
 /* userTaskList:
 {
@@ -379,7 +379,7 @@ fetches the list of available userTasks that belong to the processInstance with 
 getUserTaskListByProcessInstanceId(processDefId: string, limit?: number, offset?: number): Promise<IPagination<IUserTaskEntity>>
 
 // example
-const userTaskList = await consumerClient.getUserTaskListByProcessInstanceId('645f9869-9b59-4a15-99ee-7a54bbe43aca')
+const userTaskList = await bpmnStudioClient.getUserTaskListByProcessInstanceId('645f9869-9b59-4a15-99ee-7a54bbe43aca')
 
 /* userTaskList:
 { count: 2,
@@ -422,7 +422,7 @@ fetches the userTaskConfig of the userTask with a given Id. This userTaskConfig 
 getUserTaskConfig(userTaskId: UserTaskId): Promise<IUserTaskConfig>
 
 // example
-const userTaskConfig = await consumerClient.getUserTaskConfig('11de295d-a592-467a-ab5d-e49bdcb0ceaf'))
+const userTaskConfig = await bpmnStudioClient.getUserTaskConfig('11de295d-a592-467a-ab5d-e49bdcb0ceaf'))
 /* userTaskConfig:
 {
   userTaskEntity: [Object],
@@ -486,7 +486,7 @@ await clientInstance.cancelUserTask(createProcessTaskConfig);
 
 ### Events
 
-the ConsumerClient extends [EventEmitter2](https://github.com/asyncly/EventEmitter2), so you can register
+the BpmnStudioClient extends [EventEmitter2](https://github.com/asyncly/EventEmitter2), so you can register
 callbacks to be called when events happen. See EventEmitter2's documentation on how to register and unregister events.
 
 #### renderUserTask
@@ -494,7 +494,7 @@ callbacks to be called when events happen. See EventEmitter2's documentation on 
 Fires, when the process-engine decided, that you could display a userTask
 
 ```TypeScript
-consumerClient.on('renderUserTask', (userTaskConfig) => {
+bpmnStudioClient.on('renderUserTask', (userTaskConfig) => {
   // do something with the userTaskConfig
 });
 ```
@@ -502,25 +502,25 @@ consumerClient.on('renderUserTask', (userTaskConfig) => {
 #### processEnd
 
 Fires, when the process-engine notified you, that a process ended. The process-engine doesn't tell us what
-process ended but using the internal participantId, the consumerClient can find that out if it interacted
+process ended but using the internal participantId, the bpmnStudioClient can find that out if it interacted
 with that process before
 
 ```TypeScript
-consumerClient.on('processEnd', (processInstanceId) => {
+bpmnStudioClient.on('processEnd', (processInstanceId) => {
   // Process with processInstanceId ended.
-  // processInstanceId might be undefined, if the consumerClient
+  // processInstanceId might be undefined, if the bpmnStudioClient
   // couldn't deduce it from the participantId
 });
 ```
 
 #### [channelName]
 
-Every message the consumerClient receives from the process-engine via messagebus and that is not interpreted
+Every message the bpmnStudioClient receives from the process-engine via messagebus and that is not interpreted
 to be a `renderUserTask` or `processEnd` message, is forwarded to you. The name of the event will be the name
 of the channel the message was received on, but you can use wildcards to get all the messages
 
 ```TypeScript
-consumerClient.on('*', (messagebusMessage) => {
+bpmnStudioClient.on('*', (messagebusMessage) => {
   // get all the messages for me, even when they are not 'renderUserTask' or 'processEnd'
 });
 ```

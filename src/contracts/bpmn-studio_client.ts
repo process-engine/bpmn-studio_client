@@ -9,7 +9,7 @@ import {ILoginResult,
   UserTaskId,
   UserTaskProceedAction} from './index';
 
-export interface IConsumerClient {
+export interface IBpmnStudioClient {
   config: any;
   initialize(tokenRepository?: ITokenRepository): Promise<void>;
   login(username: string, password: string): Promise<ILoginResult>;

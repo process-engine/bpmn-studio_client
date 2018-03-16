@@ -1,6 +1,6 @@
 {
-  "name": "@process-engine/consumer_client",
-  "version": "1.0.4",
+  "name": "@process-engine/bpmn-studio_client",
+  "version": "1.0.0",
   "description": "a client to interact with the process-engine",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/process-engine/consumer_client.git"
+    "url": "git+https://github.com/process-engine/bpmn-studio_client.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/process-engine/consumer_client/issues"
+    "url": "https://github.com/process-engine/bpmn-studio_client/issues"
   },
   "devDependencies": {
     "@essential-projects/event_aggregator_contracts": "^1.0.0",
@@ -32,7 +32,7 @@
     "tslint": "^5.7.0",
     "typescript": "^2.5.2"
   },
-  "homepage": "https://github.com/process-engine/consumer_client#readme",
+  "homepage": "https://github.com/process-engine/bpmn-studio_client#readme",
   "dependencies": {
     "@essential-projects/core_contracts": "^1.0.0",
     "@essential-projects/event_aggregator": "^1.0.0",

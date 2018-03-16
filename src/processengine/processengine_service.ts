@@ -37,6 +37,8 @@ import {
   WidgetType,
 } from '../contracts/index';
 
+const MESSAGEBUS_CHANNEL_PARTICIPANT_SPLIT_INDEX: number = 2;
+
 export class ProcessEngineService extends EventEmitter2 implements IProcessEngineService {
 
   private processEngineRepository: IProcessEngineRepository;
@@ -120,7 +122,7 @@ export class ProcessEngineService extends EventEmitter2 implements IProcessEngin
         // but if the message comes via a participant-channel (instead of a role-channel), and we are
         // the source of the participant-id in the channel name, than we know what process ended
         if (channel.startsWith('/participant/')) {
-          const participantId: string = channel.split('/')[2];
+          const participantId: string = channel.split('/')[MESSAGEBUS_CHANNEL_PARTICIPANT_SPLIT_INDEX];
           const processInstanceId: string = this.getProcessIdFromParticipantId(participantId);
           eventData = processInstanceId;
           this.removeParticipantId(processInstanceId);
