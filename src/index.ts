@@ -1,2 +1,2 @@
 export * from './contracts/index';
-export * from './consumer_client';
+export * from './bpmn-studio_client';
