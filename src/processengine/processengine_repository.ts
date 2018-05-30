@@ -36,7 +36,7 @@ export class ProcessEngineRepository implements IProcessEngineRepository {
       routes: {
         userTaskData: `${config.baseRoute}/processengine/user_task_data`,
         userTaskList: `${config.baseRoute}/datastore/UserTask`,
-        startProcess: `${config.baseRoute}/processengine/start`,
+        startProcess: `${config.baseRoute}/processengine/execute`,
         processes: `${config.baseRoute}/datastore/ProcessDef`,
       },
     });
