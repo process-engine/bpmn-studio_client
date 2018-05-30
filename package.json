@@ -38,7 +38,7 @@
     "@essential-projects/event_aggregator": "^2.0.0",
     "@essential-projects/messagebus_contracts": "^2.0.0",
     "@essential-projects/security_service_contracts": "^3.0.0",
-    "@process-engine/process_engine_contracts": "feature~remove_process_start_convenience_method",
+    "@process-engine/process_engine_contracts": "v8.0.0",
     "addict-ioc": "^2.2.12",
     "eventemitter2": "^4.1.2",
     "faye": "^1.2.4",
